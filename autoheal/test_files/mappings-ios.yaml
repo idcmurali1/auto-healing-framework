@@ -1,0 +1,971 @@
+ios:
+
+  - name: us.mappings.item.productSecondaryPrice
+    identifier: (//XCUIElementTypeStaticText[@name="PriceView_secondaryProductPrice"])[2]
+
+  - name: us.mappings.item.productDetailsModule.moreDetailsLink
+    identifier: //XCUIElementTypeStaticText[@name="More details"]
+
+  - name: us.mappings.item.productDetailsModule.moreDetails.ProductDetailsTitle
+    identifier: (//XCUIElementTypeOther[@label="Product details"])
+
+  - name: us.mappings.item.productDetailsModule.shortDescription
+    identifier: //XCUIElementTypeTextView[@name="ProductDescriptionView_productShortDescription"]
+
+  - name: us.mappings.item.productDetailsModule.longDescription
+    identifier: ProductDescriptionView_productLongDescription
+
+  - name: us.mappings.item.joinWalmartPlusCTA 
+    identifier: //XCUIElementTypeStaticText[@name="Join W+"]    
+
+  - name: us.mappings.item.productDetails
+    identifier: //XCUIElementTypeTable[@name="ItemDetailsViewController.tableView"]/XCUIElementTypeCell[6]
+
+  - name: us.mappings.item.productDetailsModule.title
+    identifier: CollapsibleSectionView_productDescriptionTitle_Productdetails
+
+  - name: us.mappings.item.productDetailsShortText
+    identifier: ProductDescriptionView_productShortDescription
+
+  - name: us.mappings.item.productDetailsLongText
+    identifier: ProductDescriptionView_productLongDescription
+
+  - name: us.mappings.item.fulfillmentLabel
+    identifier: SellerFulfillmentView.fulfillmentLabel
+
+  - name: us.mappings.item.customerReviewModule.seeAllButton
+    identifier: //XCUIElementTypeButton[@name="ReviewsSummaryView.seeAllButton"]    # accessibility ID : ReviewsSummaryView.seeAllButton
+
+  - name: us.mappings.item.customerReviewsModule.reviewsCarousel
+    identifier: ReviewsSummaryView.reviewsStackView
+
+  - name: us.mappings.item.customerReviewModule.lastReview
+    identifier: //XCUIElementTypeOther[@name="ReviewsSummaryView.reviewsStackView"]/XCUIElementTypeOther[6]
+
+  - name: us.mappings.item.customerReviewListSubpage.reviewsLabelSection
+    identifier: ReviewDetailFilterView.reviewsLabel                # xpath : //XCUIElementTypeStaticText[@name="ReviewDetailFilterView.reviewsLabel"]
+
+  - name: us.mappings.item.customerReviewModule.productRating
+    identifier: ReviewsSummaryView_productRating     # No accessibility ID  xpath : //XCUIElementTypeOther[@name="ReviewsSummaryView_productRating"]
+
+  - name: us.mappings.item.customerReviewModule.5starsRow
+    identifier: HistogramRow_productHistogramRating_5_stars    # No accessibility ID  xpath : //XCUIElementTypeOther[@name="HistogramRow_productHistogramRating_5_stars"]
+
+  - name: us.mappings.item.customerReviewModule.4starsRow
+    identifier: HistogramRow_productHistogramRating_4_stars    # No accessibility ID  xpath : //XCUIElementTypeOther[@name="HistogramRow_productHistogramRating_4_stars"]
+
+  - name: us.mappings.item.customerReviewModule.3starsRow
+    identifier: HistogramRow_productHistogramRating_3_stars    # No accessibility ID  xpath : //XCUIElementTypeOther[@name="HistogramRow_productHistogramRating_3_stars"]
+
+  - name: us.mappings.item.customerReviewModule.2starsRow
+    identifier: HistogramRow_productHistogramRating_2_stars    # No accessibility ID  xpath : //XCUIElementTypeOther[@name="HistogramRow_productHistogramRating_2_stars"]
+
+  - name: us.mappings.item.customerReviewModule.1starRow
+    identifier: HistogramRow_productHistogramRating_1_stars    # No accessibility ID  xpath : //XCUIElementTypeOther[@name="HistogramRow_productHistogramRating_1_stars"]
+
+  - name: us.mappings.item.customerReviewModule.reviewsLabel
+    identifier: ReviewsSummaryView.reviewsLabel    # No accessibility ID  xpath : //XCUIElementTypeStaticText[@name="ReviewsSummaryView.reviewsLabel"]
+
+  - name: us.mappings.item.customerReviewModule.firstReview
+    identifier: //XCUIElementTypeOther[@name="ReviewsSummaryView.reviewsStackView"]/XCUIElementTypeOther[2]
+
+  - name: us.mappings.item.noReviewsView
+    identifier: //XCUIElementTypeStaticText[@name="NoReviewsView.reviewsLabel"]
+
+  - name: us.mappings.item.customerReviewsListSubPage.secondReview
+    identifier: //XCUIElementTypeTable[@name="ReviewsViewController.tableView"]/XCUIElementTypeCell[4]/XCUIElementTypeOther[1]
+
+  - name: us.mappings.item.customerReviewsListSubPage.firstReview
+    identifier: //XCUIElementTypeTable[@name="ReviewsViewController.tableView"]/XCUIElementTypeCell[3]/XCUIElementTypeOther[1]
+
+  - name: us.mappings.item.marketplace.text.3P_ProSeller
+    identifier: //XCUIElementTypeLink[contains(@label, "Pro Seller")] | //XCUIElementTypeStaticText[@name="SellerTitleView.label"] | //XCUIElementTypeLink[@name="SellerInfoView.sellerTitleView"] | //XCUIElementTypeLink[@name="SellerTitleView.label"] | //XCUIElementTypeButton[@name="FulfillmentSellerTitleView.sellerTitleLabel"]
+
+  - name: us.mappings.item.sellerPage.detailsView.navigationBar
+    identifier: //XCUIElementTypeNavigationBar[@name="GlassItemDetails.SellerDetailsView"] | //XCUIElementTypeNavigationBar[@name="ItemDetails.SellerDetailsView"] | //XCUIElementTypeOther[@name="SellerDetailsView.sellerHeadingView"]
+
+  - name: us.mappings.item.ContactSellerButton
+    identifier: //XCUIElementTypeStaticText[@name="Contact seller"] | //XCUIElementTypeStaticText[@name="Contact business"] #Contact seller
+
+  - name: us.mappings.contactSellerTitle
+    identifier: //XCUIElementTypeStaticText[@name="Contact Seller"]
+
+  - name: us.mappings.contactSellerSendMessageToText
+    identifier: ContactSellerReasonsView.sendMessageHeadingLabel
+
+  - name: us.mappings.contactSellerReasonForContactText
+    identifier: ContactSellerReasonsView.reasonHeadingStackView
+
+  - name: us.mappings.item.contactSellerPage.enterMessageText
+    identifier: //XCUIElementTypeOther[@name="ContactSellerViewController.sendMessageView"]
+  
+  - name: us.mappings.returns.contactSellerInitiateReturnText
+    identifier: ContactSellerReasonsView.reasonTitleLabel
+
+  - name: us.mappings.contactSellerSendButton
+    identifier: Send
+
+  - name: us.mappings.contactSellerConfirmationText
+    identifier: //XCUIElementTypeStaticText[@label="Your message has been sent"]
+
+  - name: us.mappings.contactSellerDoneButton
+    identifier: ContactSellerConfirmationViewController.doneButton
+
+###item
+  - name: us.mappings.item.reviewLink
+    identifier: //XCUIElementTypeButton[@name="SnapshotView_productRating"] | //*[@name="GlassStarRatingView.ratingView"]
+
+  - name: us.mappings.item.reviewPageTitle
+    identifier: //XCUIElementTypeStaticText[@name="Write a review"] | //XCUIElementTypeStaticText[@name="Write an item review"]
+
+  - name: us.mappings.item.thankYouScreen
+    identifier: WARThankYouSectionView.label
+
+  - name: us.mappings.item.giftEligibleLearnMoreLink
+    identifier: GiftingView.learnMoreButton
+
+  - name: us.mappings.item.ccLearnHowLink
+    identifier: //XCUIElementTypeButton[@name="CapitalOneBannerView.ctaButton" and @label ="Learn more" ]
+
+  - name: us.mappings.item.ccLearnHowLinkRedirection
+    identifier: //XCUIElementTypeNavigationBar[@name="Walmart Credit Card"] | //XCUIElementTypeStaticText[@name="Banking for the better¹"] | //XCUIElementTypeStaticText[@name="10% cash back at Walmart in-store or online"]
+
+  - name: us.mappings.item.returnPolicyPageLabel
+    identifier: //XCUIElementTypeOther[@name="SellerTitleView.label"]   
+
+  - name: us.mappings.item.returnPolicyPageLabelBackButton
+    identifier: //XCUIElementTypeButton[contains(@label,"Back")]
+
+  - name: us.mappings.item.writeReviewButton
+    identifier: Write a review
+
+  - name: us.mappings.item.addNickName
+    identifier: (//XCUIElementTypeTextView[@name="GlassTextView.textView"])[1]
+
+  - name: us.mappings.item.addDetailsPlease
+    identifier: //XCUIElementTypeTextView[@name="GlassTextView.textView" and contains(@label,"Details please!")] 
+  
+  - name: us.mappings.feedback.threestarRating
+    identifier: //*[contains(@name, "3") and (contains(@name, "star") or contains (@name, "Star"))] | //XCUIElementTypeOther[@name="WaRProductRatingView.ratingView"]//XCUIElementTypeButton[contains(@name,"3 out of 5 stars")]
+
+  - name: us.mappings.item.submitReviewButton
+    identifier: WARFooterSectionView.submitButton
+
+  - name: us.mappings.item.backButton
+    identifier: //XCUIElementTypeButton[contains(@name,"Back")] | //XCUIElementTypeButton[@name="WaRViewController_itemDetailCloseButton"]
+
+  - name: us.mappings.item.discardButton
+    identifier: Discard
+
+  - name: us.mappings.item.contactSellerDoneButton 
+    identifier: Done
+
+  - name: us.mappings.item.SelectAddressScreenTitle 
+    identifier: //XCUIElementTypeStaticText[@name="Select address"] | //XCUIElementTypeStaticText[@name="Add address"]
+
+  - name: us.mappings.item.validateSelectStoreScreen
+    identifier: StoreSelectionViewController.navTitleLabel
+
+  - name: us.mappings.item.selectStoreCloseButton
+    identifier: //XCUIElementTypeButton[@name="close"]
+
+  - name: us.mappings.item.ad.skyline
+    identifier: //XCUIElementTypeButton[@name="item_skyline" and contains(@label,"Shop now") and contains(@label,"Sponsored") ]
+
+  - name: us.mappings.item.ad.SponsoredAd.Gridview 
+    identifier: //XCUIElementTypeOther[@name="SBAvariantAdView.carouselView"]
+
+  - name: us.mappings.item.ad.SponsoredAd.Variantview
+    identifier: //XCUIElementTypeButton[@name="SBAAdView.brandView"]
+
+  - name: us.mappings.item.ad.SponsoredAd.sponsorKeyword
+    identifier: //XCUIElementTypeButton[@name="SBAvariantAdView.brandView" and  contains(@label,"Sponsored") ]
+
+  - name: us.mappings.item.ad.SponsoredAd.VariantsponsorKeyword
+    identifier: //XCUIElementTypeButton[@name="SBAAdView.brandView" and  contains(@label,"Sponsored") ]
+
+  - name: us.mappings.item.ad.SponsoredAd.ATCbutton
+    identifier: //XCUIElementTypeCollectionView[@name="SBAVarientCarouselView.collectionView"]//XCUIElementTypeOther[@name="AddToCartButton.stackView"] 
+
+  - name: us.mappings.item.ad.SponsoredAd.ATCbutton.increment
+    identifier: (//XCUIElementTypeButton[@name="stepper.mainButton"])[4]/following-sibling::XCUIElementTypeButton[contains(@name,"stepper.incrementButton")] | //XCUIElementTypeButton[@name="stepper.incrementButton"]
+
+  - name: us.mappings.item.ad.SponsoredAd.ATCbutton.decrement
+    identifier: (//XCUIElementTypeButton[@name="stepper.mainButton"])[4]/following-sibling::XCUIElementTypeButton[contains(@name,"stepper.decrementButton")] | //XCUIElementTypeButton[@name="stepper.decrementButton"]
+
+  - name: us.mappings.item.ad.SponsoredAd.clickonitem
+    identifier: //XCUIElementTypeCollectionView[@name="SBAVarientCarouselView.collectionView"]  # //XCUIElementTypeCollectionView[@name="SBAVarientCarouselView.collectionView"]/XCUIElementTypeScrollView/XCUIElementTypeCell/XCUIElementTypeOther/XCUIElementTypeOther[1]/XCUIElementTypeOther
+
+  - name: us.mappings.item.ad.SponsoredAd.Variant.clickonitem
+    identifier: //XCUIElementTypeCollectionView[@name="SBACarouselView.collectionView"] 
+
+  - name: us.mappings.item.ad.SponsoredAd.item.brandName
+    identifier: //XCUIElementTypeButton[@name="BrandNameView_brandNameButton"] | //XCUIElementTypeStaticText[@name="TitleView_productTitle"] | //XCUIElementTypeTable[@name="ItemDetailsViewController.tableView"]
+
+  - name: us.mappings.item.ad.SponsoredAd.item.title
+    identifier: //XCUIElementTypeStaticText[@name="TitleView_productTitle"]
+
+  - name: us.mappings.item.ad.SpCarouseladsRatings
+    identifier: //XCUIElementTypeOther[@name="GlassStarRatingView.mainStackView"]
+
+  - name: us.mappings.item.ad.SponsoredAd.item.ratings
+    identifier: GlassProductTile_rating
+    
+  - name: us.mappings.item.ad.SponsoredAd.item.close
+    identifier: ItemDetailsViewController_itemDetailCloseButton
+
+  - name: us.mappings.search.ModuleView 
+    identifier:  //XCUIElementTypeCollectionView[@name="SectionsViewController.collectionView" or @name="SectionsViewController.collectionView" ]
+
+  - name: us.mappings.item.ad.Marquee1
+    identifier: //XCUIElementTypeButton[@name="item_banner_marqueeapp1"] | //XCUIElementTypeButton[@name="item_banner_marqueeapp1" and contains(@label,"Sponsored") ] | //XCUIElementTypeButton[@name="item_banner_" and contains(@label,"Sponsored")] | //XCUIElementTypeOther[@name="MarqueePlaceholderView.glassCard"]
+
+  - name: us.mappings.item.ad.Marquee1Logo
+    identifier: //XCUIElementTypeOther[@name="MarqueeAdView.logoStackView"]
+
+  - name: us.mappings.item.ad.Marquee1Headline
+    identifier: //XCUIElementTypeOther[@name="MarqueeAdView.mainStackView"]
+  
+  - name: us.mappings.search.ad.Marquee1SponsoredText
+    identifier: //XCUIElementTypeStaticText[@name="MarqueeAdView.advertisementLabel"] | //XCUIElementTypeStaticText[@name="MarqueeAdView.sponsoredLabel"]
+
+  - name: us.mappings.item.ad.spCarouselView
+    identifier: //XCUIElementTypeCollectionView[@name="ItemDetails.AdView.SPCarouselView"]
+
+  - name: us.mappings.item.ad.paneFirstitem
+    identifier: (//XCUIElementTypeButton[@name="GlassProductTile.mainStackView"])[5]
+
+  - name: us.mappings.item.ad.paneSeconditem 
+    identifier: (//XCUIElementTypeButton[@name="GlassProductTile.mainStackView"])[6]  
+
+  - name: us.mappings.item.ad.SpCarouseladsReviews
+    identifier: //XCUIElementTypeButton[@name="SnapshotView_productRating"] | //*[@name="GlassProductTile_rating"]
+
+  - name: us.mappings.item.moreSellerOptions
+    identifier: SecondaryBuyBoxView.moreSellerOptionsLabel  #xpath: //XCUIElementTypeStaticText[@name="SecondaryBuyBoxView.moreSellerOptionsLabel"]
+
+  - name: us.mappings.item.compareSellerButton
+    identifier: //XCUIElementTypeButton[@name="SecondaryBuyBoxView.compareSellerButton"]
+
+  - name: us.mappings.item.compareAllSellers.button
+    identifier: //XCUIElementTypeStaticText[@name="Compare all sellers"]  
+
+  - name: us.mappings.item.compareAllSellers.button.value
+    identifier: //XCUIElementTypeStaticText[contains(@value, "Compare all sellers")] #Joel Add    
+
+  - name: us.mappings.item.compareAllSellers.button.name
+    identifier: //XCUIElementTypeStaticText[contains(@name, "Compare all sellers")]  #Joel Add
+
+  - name: us.mappings.item.compareAllSellers.button.label
+    identifier: //XCUIElementTypeStaticText[contains(@label, "Compare all sellers")]  #Joel Add
+
+  - name: us.mappings.item.compareAllSellers.module  #Joel Add
+    identifier: //XCUIElementTypeTable[@name="ItemDetailsViewController.tableView"]/XCUIElementTypeCell[10] | //XCUIElementTypeTable[@name="ItemDetailsViewController.tableView"]/XCUIElementTypeCell[10]/XCUIElementTypeOther[1] | //XCUIElementTypeTable[@name="ItemDetailsViewController.tableView"]/XCUIElementTypeCell[10]/XCUIElementTypeOther[1]/XCUIElementTypeOther | //XCUIElementTypeStaticText[@name="Compare all sellers"]
+
+  - name: us.mappings.item.compareSeller.detailsButton
+    identifier: (//XCUIElementTypeStaticText[@name="Details"])[1] | //XCUIElementTypeButton[@name="SellerReturnView.returnDetailsButton"]
+
+  - name: us.mappings.item.compareSeller.returnWithin
+    identifier: //XCUIElementTypeStaticText[contains(@label,'Return within') and contains(@name,'ReturnPolicyLineItemView.typeLabel')] #(//XCUIElementTypeStaticText[@name="ReturnPolicyLineItemView.typeLabel"])[1]
+
+  - name: us.mappings.item.compareSeller.returnableToStore
+    identifier: //XCUIElementTypeStaticText[contains(@label,'Returnable to store?') and contains(@name,'ReturnPolicyLineItemView.typeLabel')] #(//XCUIElementTypeStaticText[@name="ReturnPolicyLineItemView.typeLabel"])[2]
+
+  - name: us.mappings.item.compareSeller.returnPolicyStandards
+    identifier: ReturnPolicyStandardsView.descriptionLabel   
+
+  - name: us.mappings.item.compareSeller.returnPolicyHeader
+    identifier: //XCUIElementTypeOther[@name="SellerTitleView.label"] #//XCUIElementTypeTable[@name="ReturnPolicyViewController.tableview"]/XCUIElementTypeCell[1]/XCUIElementTypeOther[2]/XCUIElementTypeOther     
+
+  - name: us.mappings.item.compareSellers.PrimarySellerPrice
+    identifier: //XCUIElementTypeStaticText[contains(@value, "Sold and shipped by Walmart")]/ancestor::XCUIElementTypeCell//XCUIElementTypeStaticText[contains(@value, "$")]
+
+  - name: us.mappings.gifting.itempage.giftbadge
+    identifier: //XCUIElementTypeStaticText[@label="This item is gift eligible"]  #//XCUIElementTypeStaticText[@name="GiftingView.titleLabel"]
+
+  - name: us.mappings.item.broughtBefore.label
+    identifier: BoughtBeforeView.boughtLabel
+
+  - name: us.mappings.item.broughtBefore.variant
+    identifier: //XCUIElementTypeStaticText[@name="BoughtBeforeView.variantLabel"]
+
+  - name: us.mappings.item.broughtBefore.date
+    identifier: BoughtBeforeView.dateLabel
+
+  - name: us.mappings.item.variantCategory
+    identifier: ((//XCUIElementTypeStaticText[@name="VariantCategoryView_variantCategory"])[${index}]
+
+  - name: us.mappings.item.multi.variant.color1
+    identifier: //XCUIElementTypeButton[@name="VariantTileView_actual_color_variantTitle0"]
+
+  - name: us.mappings.item.multi.variant.color2
+    identifier: //XCUIElementTypeButton[@name="VariantTileView_actual_color_variantTitle1"]
+
+  - name: us.mappings.item.multi.variant.size1
+    identifier: //XCUIElementTypeButton[@name="VariantTileView_clothing_size_variantTitle0"]
+
+  - name: us.mappings.item.multi.variant.size2
+    identifier: //XCUIElementTypeButton[@name="VariantTileView_clothing_size_variantTitle1"]
+
+  - name: us.mappings.item.customerReviewsListSubpage.title
+    identifier: //XCUIElementTypeStaticText[@name="ReviewDetailHeaderView.titleLabel"] | //XCUIElementTypeStaticText[@label="Customer reviews"]         
+
+  - name: us.mappings.item.variant.width
+    identifier: //XCUIElementTypeScrollView[@name="VariantCategoryView_scrollView_shoe_width"]//XCUIElementTypeButton[contains(@label,"${Width}")] | //XCUIElementTypeButton[@name="VariantTileView_shoe_width_variantTitle1"and contains(@label,"${Width}")]
+
+  - name: us.mappings.item.variant.size
+    identifier: //XCUIElementTypeStaticText[@name="VariantTileView.titleLabel" and @label="$itemSize"] | //XCUIElementTypeButton[contains(@name, "size_variantTitle")]//XCUIElementTypeStaticText[@value="$itemSize"]
+
+  - name: us.mappings.item.variant.colour
+    identifier: //XCUIElementTypeButton[contains(@name,"VariantTileView_actual_color_variantTitle") and contains(@label,"${Color}")]
+
+  - name: us.mappings.item.variantCategoryView
+    identifier: //XCUIElementTypeButton[@name="VariantTileView_actual_color_variantTitle${Variant}"]| //XCUIElementTypeButton[@name="VariantTileView_actual_color_variantTitleSlashThrough0" or @name = "VariantTileView_actual_color_variantTitle0"]
+
+  - name: us.mappings.item.customerReviewsListSubpage.productRating
+    identifier: ReviewsSummaryView_productRating 
+
+  - name: us.mappings.item.amendedItemText2
+    identifier: //XCUIElementTypeStaticText[@value="${qty} items"]
+
+  - name: us.mappings.contactSellerNextButton
+    identifier: Next
+
+  - name: us.mappings.contactSellerOptionWhereIsMyOrder
+    identifier: //XCUIElementTypeButton[@name="Where is my order"]
+
+  - name: us.mappings.contactSellerOptionCancelMyOrder
+    identifier: //XCUIElementTypeButton[@name="Cancel my order"]
+
+  - name: us.mappings.contactSellerOptionGiveFeedback
+    identifier: //XCUIElementTypeButton[@name="Give feedback"]
+
+  - name: us.mappings.contactSellerOptionAskAQuestion
+    identifier: //XCUIElementTypeButton[@name="Ask a question"]
+
+  - name: us.mappings.contactSellerMessageField
+    identifier: GlassTextView.textView || LDTextArea.textView
+
+  - name: us.mappings.contactSellerCancelModalWarning
+    identifier: Leave contact seller?
+
+  - name: us.mappings.contactSellerConfirmationMessage
+    identifier: ContactSellerConfirmationViewController.confirmationMessageLabel
+
+  - name: us.mappings.marketplace.compareSellerButton
+    identifier: //XCUIElementTypeButton[contains(@label,'Compare all sellers') and contains(@name,'SecondaryBuyBoxView.compareSellerButton')]
+
+  - name: us.mappings.moreSellerPageTitle
+    identifier:  //XCUIElementTypeStaticText[@name="SecondaryBuyBoxView.moreSellerOptionsLabel"] | //XCUIElementTypeStaticText[@name="More seller options"]
+
+  - name: us.mappings.marketplace.compareSellerAddToCartButton
+    identifier: //XCUIElementTypeCell[@name="MoreSellerOptionsWithSubscriptionCell.Type.0"]//XCUIElementTypeButton[contains(@label, "Add to cart")] | //XCUIElementTypeButton[@name="stepper.mainButton"]
+
+  - name: us.mappings.item.showShippingDeliveryAndPickupOptionsButton
+    identifier: //XCUIElementTypeButton[@name="FulfillmentHidingView.messageButton"]
+
+  - name: us.mappings.itempage.checkAvailability
+    identifier: //XCUIElementTypeButton[contains(@label,"Delivery from store Check eligibility")]
+
+  - name: us.mapping.item.addWalmartProtectionPlan
+    identifier: (//XCUIElementTypeOther[@name="BottomSheetContainerViewController.bottomSheetView"])[2]
+
+  - name: us.mapping.item.addWalmartProtectionPlan.closeButton
+    identifier: //XCUIElementTypeButton[@name="Close"]
+
+  - name: us.mappings.marketplace.moreSellersCloseButton
+    identifier: //XCUIElementTypeButton[@name="Close"] | //XCUIElementTypeButton[@name="ItemDetailsViewController_itemDetailCloseButton"]
+
+  - name: us.mappings.item.marketplacePickupLabel
+    identifier: //XCUIElementTypeStaticText[contains(@label, "Pick up directly at")] | //*[contains(@label,"Pick this item up directly at")] | //XCUIElementTypeLink[@name="FulfillmentSellerTitleView.sellerTitleLabel" and contains(@label,"LocalFinds")]
+
+  - name: us.mappings.item.marketplacePickupLabelNotAvailable
+    identifier: //XCUIElementTypeButton[@name="PickupStoreView.fulfillmentLabel" and contains(@label," not available")]
+
+  - name: us.mappings.item.marketplacePickupChangeStoreRadioButton
+    identifier: //XCUIElementTypeButton[@name="StoreSelectionCell.radioButton" and not(contains(@value,"1"))]
+
+  - name: us.mappings.acc.item.s2sLabel
+    identifier: //XCUIElementTypeButton[@name="ShippingView.fulfillmentLabel"] | //XCUIElementTypeButton[@name="FulfillmentZoneOneView.LeftIntentView" and contains(@label,"Shipping")]
+
+  - name: us.mappings.acc.item.putLabel
+    identifier: //XCUIElementTypeButton[@name="PickupStoreView.fulfillmentLabel"]
+
+  - name: us.mappings.item.productFullfillmentText
+    identifier: //XCUIElementTypeStaticText[@name="SellerFulfillmentView.fulfillmentLabel"]
+
+  - name: us.mappings.orderDetails.itemExpansionLink
+    identifier: //XCUIElementTypeButton[contains(@label,"items")]
+
+  - name: us.mappings.item.productsellerAndShipper
+    identifier: //XCUIElementTypeOther[@name="PrimaryBuyBoxView.sellerInfoBoxView"] | //XCUIElementTypeOther[@name="ItemDetails.FulfillmentContainerView.FulfillmentZoneThreeView"]
+
+  - name: us.mappings.item.productReturnInfoText
+    identifier: //XCUIElementTypeStaticText[@name="SellerReturnView.returnTypeLabel"]
+
+  - name: us.mappings.item.productReturnInfoText.id
+    identifier: //XCUIElementTypeStaticText[@name="SellerReturnView.returnTypeLabel"]  | //XCUIElementTypeStaticText[@name="FulfillmentSellerReturnView.returnTypeLabel"]
+
+  - name: us.mappings.item.SoldAndShipByLabel
+    identifier: //XCUIElementTypeStaticText[@name="SellerInfoView.sellerTitleView"]
+
+  - name: us.mappings.item.WFSLabel
+    identifier: //XCUIElementTypeStaticText[@name="SellerInfoView.wfsLabel"]
+
+  - name: us.mappings.item.sellerInfoView
+    identifier: SellerInfoView.sellerDetailButton
+    
+  - name: us.mappings.item.productReturnInfoDetailsLink
+    identifier:  //XCUIElementTypeStaticText[@name="Details"]
+
+  - name: us.mappings.item.productReturnInfoDetailsButton  #Joel Added
+    identifier: //XCUIElementTypeStaticText[@label="Details"] | //XCUIElementTypeStaticText[@name="Details"] | //XCUIElementTypeStaticText[@value="Details"] | //XCUIElementTypeTable[@name="SellerDetailsViewController.tableView"]/XCUIElementTypeCell[2]/XCUIElementTypeOther[1]/XCUIElementTypeOther #Details #SellerReturnView.returnDetailsButton
+
+  - name: us.mappings.item.productNotReturnableTextFromPolicyPage
+    identifier: //XCUIElementTypeStaticText[`label == "No"`]
+
+  - name: mappinngs.item.returnPolicyPageLabelCloseButton
+    identifier: //XCUIElementTypeButton[@name="Close"]
+
+  - name: us.mappings.item.returnPolicyPageLabelReturnStatusYes
+    identifier: (//XCUIElementTypeStaticText[@name="ReturnPolicyLineItemView.valueLabel"])[2]
+  
+  - name: mapping.item.productFreeShippingText
+    identifier: SellerFulfillmentView.fulfillmentLabel
+  
+  - name: mapping.item.moreShippingOptionLink
+    identifier: //XCUIElementTypeStaticText[@name="More options"]
+  
+  - name: mapping.item.shippingOptionPageHeaderText
+    identifier: //XCUIElementTypeStaticText[@name="ShippingOptionsViewController.titleLabel"]
+  
+  - name: mapping.item.shippingOptionPageCloseButton
+    identifier: //XCUIElementTypeNavigationBar[@name="Marketplace.ShippingOptionsView"]/XCUIElementTypeButton
+  
+  - name: mapping.item.shippingOptionProductName
+    identifier: //XCUIElementTypeStaticText[@name="ShippingOptionItemTile.nameLabel"]
+  
+  - name: mapping.item.productPriceOnShippingPage  
+    identifier: //XCUIElementTypeStaticText[@name="ShippingOptionItemTile.priceLabel"]
+
+  - name: us.mappings.item.ad.SpCarouselads.ATCbutton
+    identifier: //XCUIElementTypeCollectionView[@name="ItemDetails.AdView.SPCarouselView"]//*[contains(@name, "Add")] 
+
+  - name: us.mappings.item.ad.SpCarouselads.ItemCount
+    identifier: //XCUIElementTypeButton[@name="stepper.mainButton"]
+
+  - name: us.mappings.item.verifyFitmentNotFitMessage
+    identifier: //XCUIElementTypeStaticText[@name="FitmentStatusLabel.alertMessage"] | //XCUIElementTypeStaticText[contains(@name,"Looks like this tire")]
+
+  - name: us.mappings.item.verifyFindTiresThatFitButton
+    identifier: //XCUIElementTypeButton[@name="Find tires that fit" or @label="Find tires that fit"]
+
+  - name: us.mappings.item.verifyStatusFitmentGoodFitMessage
+    identifier: //XCUIElementTypeStaticText[@name="FitmentStatusLabel.alertMessage"] | //*[contains(@label,"This tire is a good fit")] 
+
+  - name: us.mappings.item.fitmentAddVechicleOrChange 
+    identifier: //XCUIElementTypeStaticText[@name="Add vehicle"] | //XCUIElementTypeStaticText[@name="Change"]
+
+  - name: us.mappings.item.ad.SpCarouselads.PostAddToCartView
+    identifier: //XCUIElementTypeNavigationBar[@name="ItemDetails.PostAddToCartView"]  
+
+  - name: us.mappings.item.ad.SpCarouselads.ClosePostAddToCartView
+    identifier: //XCUIElementTypeButton[@name="Close"]
+
+  - name: us.mappings.item.ad.SpCarouselads.ATCQuantityListView
+    identifier: //XCUIElementTypeTable[@name="ATCQuantityListViewController.tableView"] 
+
+  - name: us.mappings.item.ad.SpCarouselads.ATCQuantityListView1
+    identifier: //XCUIElementTypeButton[@name="1"]   
+
+  - name: us.mappings.item.ad.SpCarouselads.ATCQuantityListView2
+    identifier: //XCUIElementTypeButton[@name="2 in cart, selected"]
+
+  - name: us.mappings.item.ad.SpCarouselads.ATCQuantityListViewSelectedQuatity
+    identifier: //XCUIElementTypeButton[contains(@name,"in cart, selected")]
+
+  - name: us.mappings.orderDetails.marketplace.text.3P.sellerReviews.id  #Joel Added
+    identifier: //XCUIElementTypeStaticText[@name="SellerInfoView.sellerRatingView"] | //XCUIElementTypeStaticText[@name="FulfillmentSellerInfoView.sellerRatingView"]
+
+  - name: us.mappings.item.ACCdetailsLink
+    identifier: FitmentTireInstallationView.linkButton
+
+  - name: us.mappings.item.giftCardCustomerPriceField
+    identifier: PGiftCardCategoryView.amountTextField
+
+  - name: us.mappings.item.giftCardDefaultAmount
+    identifier: PGiftCardCategoryView.headerLabel
+
+  - name: us.mappings.item.priceOption1
+    identifier: PGiftCardTileView_tile_20.0
+
+  - name: us.mappings.item.priceOption2
+    identifier: PGiftCardTileView_tile_25.0
+
+  - name: us.mappings.item.ACCdetailsPageHeading
+    identifier: //XCUIElementTypeButton[@name="search_skyline"] | //XCUIElementTypeStaticText[@label="Walmart tire installation"]
+
+  - name: us.mappings.item.tireInstallationTitle
+    identifier: //XCUIElementTypeOther[@name="ItemDetails.AddOnContentView.autoCareCenterService"]
+
+  - name: us.mappings.item.addOnServiceDetailsViewController
+    identifier: //XCUIElementTypeStaticText[@name="AddOnServiceDetailsViewController.titleLabel"]
+
+  - name: us.mappings.item.AccModule.ExpandButton 
+    identifier: //XCUIElementTypeButton[@name="autoCareCenterService"]   
+
+  - name: us.mappings.item.AccModule.CollapseButton 
+    identifier: //XCUIElementTypeButton[@name="autoCareCenterService"]
+
+  - name: us.mappings.item.addVechicleCta
+    identifier: //XCUIElementTypeStaticText[@name="Add vehicle"]  
+
+  - name: us.mappings.item.addVechicleFormTitle
+    identifier: //XCUIElementTypeStaticText[@name="Add your vehicle"] 
+
+  - name: us.mappings.item.addVechicleSuccessText
+    identifier: //XCUIElementTypeOther[@name="FitmentStatusWidgetView.containerView"]
+
+  - name: us.mappings.item.removeVehicleCta
+    identifier: //XCUIElementTypeButton[@name="FitmentFooterActionsView.removeVehicleButton"]
+
+  - name: us.mappings.item.variant.secondContainerVariant
+    identifier: //XCUIElementTypeOther[@name="VariantCategoryView.variantsStackView"]//XCUIElementTypeButton[contains(@name, "VariantTileView")][${index}]
+  
+  - name: us.mappings.item.variant.singleVariantOptionsText
+    identifier: //XCUIElementTypeStaticText[@name="VariantCategoryView_variantCategory"] #(//XCUIElementTypeStaticText[@name="VariantTileView.titleLabel"])[${index}]
+
+  - name: us.mappings.item.variant.firstContainerVariant
+    identifier: //XCUIElementTypeOther[@name="VariantCategoryView.variantsStackView"]
+
+  - name: us.mappings.item.productTitleViewpProductTitle
+    identifier: //XCUIElementTypeStaticText[@name="TitleView_productTitle"]
+
+  - name: us.mappings.item.productAddToListButtonView
+    identifier: //XCUIElementTypeButton[@name="AddToListButtonView.button"]
+
+  - name: us.mappings.item.productAddToRegistryButtonView
+    identifier: //XCUIElementTypeButton[@name="AddToRegistryButtonView.button"]
+
+  - name: us.mappings.item.productAddItemListPage
+    identifier: //XCUIElementTypeCell[contains(@name,"Favorites, Button,")]
+
+  - name: us.mappings.item.productAddItemListPageSaveButton
+    identifier: //XCUIElementTypeButton[@name="ListAddItemViewController.actionButton"]
+
+  - name: us.mappings.item.productNonConfigBundleView
+    identifier: //*[@name="NonConfigBundleView_title" or contains(@label, "This bundle includes")]
+
+  - name:  us.mappings.item.ad.buyboxFulfillmentInfo
+    identifier: BuyBoxAdViewV1.fulfillmentBadgeView
+ 
+  - name: us.mappings.item.ad.buyboxAd
+    identifier: BuyBoxAdViewV1_buyboxcontainerstackview
+
+  - name: us.mappings.item.ad.buyboxRatings
+    identifier: GlassStarRatingView.ratingView
+
+  - name: us.mappings.item.ad.buyboxReviews
+    identifier: GlassStarRatingView.ratingsLabel
+
+  - name: us.mappings.item.ad.buyboxSponsoredLabel
+    identifier: BuyBoxAdViewV1.sponsoredLabel
+               
+  - name:  us.mappings.item.ad.buyboxad.ATCbutton
+    identifier: BuyBoxAdViewV1.stepperCartButton
+
+  - name:  us.mappings.item.ad.buyboxad.ATCbuttonCount
+    identifier: //XCUIElementTypeButton[@name="BuyBoxAdViewV1.stepperCartButton"]//XCUIElementTypeButton[@name="stepper.mainButton"]
+
+  - name: us.mappings.item.switching.fulfillment.intentText
+    identifier: //XCUIElementTypeButton[contains(@label,"${Intent}")] | //XCUIElementTypeStaticText[contains(@label,"${Intent}")] | //XCUIElementTypeButton[contains(@label,"${Intent}")]
+
+  - name: us.mappings.item.switching.fulfillment.intentTextSwitching
+    identifier: //XCUIElementTypeButton[contains(@label,"${switchIntent}")] | //XCUIElementTypeStaticText[contains(@label,"${switchIntent}")] | //XCUIElementTypeButton[contains(@label,"${switchIntent}")]
+
+  - name: us.mappings.item.switching.fulfillment.storeName
+    identifier: //XCUIElementTypeStaticText[contains(@label,"${storeName}")] | //XCUIElementTypeStaticText[contains(@value,"${storeName}")] | //XCUIElementTypeButton[contains(@label,"${storeName}")]
+
+  - name: us.mappings.item.visionBuyInStoreBadge
+    identifier: AddToCartView_buy_in_store #buy in store badge
+
+  - name: us.mappings.item.visionPrescriptionBadge
+    identifier: //XCUIElementTypeStaticText[@label="Prescription available"]
+  
+  - name: us.mappings.item.vision.sizeGuide
+    identifier: //XCUIElementTypeButton[@name="VariantCategoryView.sizeGuideButton"]
+  
+  - name: us.mappings.item.vision.sizeGuideBottomSheet
+    identifier: //XCUIElementTypeOther[@name="SizeGuideView.sizeChartSelectionView"]
+
+  - name: us.mappings.item.measuringGuideViewImage
+    identifier: SizeGuideView.measuringGuideView
+
+  - name: us.mappings.item.vision.sizeGuide.backButton
+    identifier: //XCUIElementTypeButton[@name="Back"] | //XCUIElementTypeButton[@name="SizeGuideViewController_itemDetailCloseButton"]
+  
+  - name: us.mappings.item.vision.sizeGuideDefaultSelection
+    identifier: //XCUIElementTypeButton[contains(@label, "Child")]
+  
+  - name: us.mappings.item.vision.buyInStoreBottomSheet
+    identifier: VisionBuyInStoreViewController_come_into_vision_center
+
+  - name: us.mappings.item.vision.buyInStoreContinueButton
+    identifier: VisionBuyInStoreViewController_see_store_details
+  
+  - name: us.mappings.item.vision.storeDetail
+    identifier: //XCUIElementTypeNavigationBar[@name="Store details"]
+  
+  - name: us.mappings.item.vision.buyInStoreChangeButton
+    identifier: //XCUIElementTypeStaticText[@name="Change"]
+
+  - name: us.mappings.item.visionBuyInStoreLabel
+    identifier: StoreOnlyInventoryView.titleLabel #buy in store badge
+  
+  - name: us.mappings.item.selectStoreTextFieldVisionItem
+    identifier: //XCUIElementTypeTextField[@name="ZipCodeField.zipCodeTextField"]
+
+  - name: us.mappings.item.SaveMoneyOnPrescription
+    identifier: //XCUIElementTypeStaticText[@name="ServicesListItemView.descriptionLabel"] | //XCUIElementTypeStaticText[@label="Prescription available"]
+
+  - name: us.mappings.item.twentyPercentPromo
+    identifier: //XCUIElementTypeStaticText[contains(@label,"Save 20% on each additional pair")]
+
+  - name: us.mappings.item.verifyMakeTheseFramesYourOwn
+    identifier: //XCUIElementTypeStaticText[contains(@label,"Make these frames your own")]
+
+  - name: us.mappings.item.verifyCustomizeFrameDetails
+    identifier: //XCUIElementTypeStaticText[contains(@label,"Customize these frames")]
+
+  - name: us.mappings.item.verifySeeHow
+    identifier: //XCUIElementTypeStaticText[contains(@label,"See how")]
+
+  - name: us.mappings.item.arrivesWithinBusinessDays
+    identifier: //XCUIElementTypeStaticText[contains(@label,"Arrives within 7-9 business days")]
+
+  - name: us.mappings.item.selectYourFrameAndLenses
+    identifier: //XCUIElementTypeStaticText[contains(@label,"Select your frames and lenses")]
+
+  - name: us.mappings.item.framesSheetGotIt
+    identifier: //XCUIElementTypeStaticText[contains(@label,"Got it")]
+
+  - name: us.mappings.item.verifyFSAandHSA
+    identifier: //XCUIElementTypeStaticText[@label="FSA and HSA eligible"] | //XCUIElementTypeStaticText[@name="SpecialBadgeView.descriptionLabel"]
+
+  - name: us.mappings.item.free90daysReturns
+    identifier: FulfillmentSellerReturnView.returnTypeLabel       
+
+  - name: us.mappings.item.verifySelectLensesCTA
+    identifier: //XCUIElementTypeButton[@name="Select lenses"]
+
+  - name: us.mappings.item.verifySelectYourLensesTitle
+    identifier: //XCUIElementTypeStaticText[@name="Select your lenses"]
+
+  - name: us.mappings.item.verifySingleVisionLense
+    identifier: //XCUIElementTypeStaticText[@name="Single vision"]
+
+  - name: us.mappings.item.verifyWhat'sYourPrescriptionType
+    identifier: //XCUIElementTypeStaticText[@name="What’s your prescription type?"]
+
+  - name: us.mappings.item.verifySubTotalText
+    identifier: //XCUIElementTypeStaticText[@name="PrescriptionOrderFooter.subtotalLabel"] | //XCUIElementTypeStaticText[contains(@label,"Subtotal")]
+
+  - name: us.mappings.item.continue
+    identifier: Continue  
+
+  - name: us.mappings.item.verifyWhatTypesOfLesesYouNeed
+    identifier: What type of lenses do you need?
+
+  - name: us.mappings.item.verifyClearOption
+    identifier: //XCUIElementTypeCell[contains(@name,"Clear")] | //XCUIElementTypeCell[@name="Clear, Included, Classic lenses that are great for all purposes."]/XCUIElementTypeOther[2]
+
+  - name: us.mappings.item.verifySunGlassesOption
+    identifier: //XCUIElementTypeStaticText[@name="Sunglasses"]
+
+  - name: us.mappings.item.verifyLightReactiveOption
+    identifier: //XCUIElementTypeCell[contains(@name,"Light reactive")]
+
+  - name: us.mappings.item.verifyWhatLenseMaterialWorkForYou
+    identifier: //XCUIElementTypeStaticText[@name="What lens material works for you?"]
+
+  - name: us.mappings.item.standard
+    identifier: //XCUIElementTypeCell[contains(@name,"Standard")]
+
+  - name: us.mappings.item.verifySunPolyCarbonateOption
+    identifier: //XCUIElementTypeCell[@name="Polycarbonate, +$45.00, Lightweight and durable, great for active lifestyles."]/XCUIElementTypeOther[2]/XCUIElementTypeOther/XCUIElementTypeOther[1] |  //XCUIElementTypeCell[contains(@name,"Polycarbonate")]
+
+
+  - name: us.mappings.item.lenseMaterial
+    identifier: //XCUIElementTypeStaticText[@name="Polycarbonate"] | //XCUIElementTypeCell[contains(@name,"${LenseMaterial}")]
+
+  - name: us.mappings.item.verifyHiIndexOption
+    identifier: //XCUIElementTypeCell[contains(@name,"Hi-index")]
+
+  - name: us.mappings.item.color.copper
+    identifier: //XCUIElementTypeCell[contains(@name,"Copper")]
+
+  - name: us.mappings.item.color.grey
+    identifier: //XCUIElementTypeCell[contains(@name,"Grey")]
+
+  - name: us.mappings.item.verifyAnythingWantToAdd
+    identifier: //XCUIElementTypeStaticText[contains(@name,"Is there anything you want to add")]
+                                                            
+
+  - name: us.mappings.item.selectedAddOns
+    identifier: //XCUIElementTypeCell[contains(@name,"${add-ons}")]      
+
+  - name: us.mappings.item.anythingToAdd
+    identifier: //XCUIElementTypeStaticText[contains(@name,"Is there anything you want to add")]
+
+  - name: us.mappings.item.noAddOn
+    identifier: //XCUIElementTypeCell[contains(@name,"No add-ons")]
+
+  - name: us.mappings.item.verifyAntiRefective
+    identifier: //XCUIElementTypeCell[contains(@name,"Anti-reflective")]
+
+  - name: us.mappings.item.verifyAntiRefecticveWithBlueLight
+    identifier: //XCUIElementTypeCell[contains(@name,"Anti-reflective with blue light")]
+
+  - name: us.mappings.item.verifyReviewYourSelectionTitle
+    identifier: //XCUIElementTypeStaticText[@name="Review your selections"]
+
+  - name: us.mappings.item.reviewYourSelection
+    identifier: //XCUIElementTypeStaticText[@name="Review your selections"]
+
+  - name: us.mappings.item.verifyEverythingLookRight
+    identifier: //XCUIElementTypeStaticText[contains(@name,"Does everything look right to you")]
+
+  - name: us.mappings.item.verifyFramesText
+    identifier: //XCUIElementTypeOther[contains(@label,"Frames")]
+
+  - name: us.mappings.item.verifyLensesText
+    identifier: //XCUIElementTypeOther[contains(@label,"Lenses")]
+
+  - name: us.mappings.item.verifySubTotalTitle
+    identifier: //XCUIElementTypeOther[contains(@label,"Subtotal")]
+
+  - name: us.mappings.item.verifyAddPrescriptionCTA
+    identifier: //XCUIElementTypeButton[@label="Add prescription"] | //XCUIElementTypeButton[@name="CartItemTileView.addVisionCTAButton" and @accessible ="true"] | //XCUIElementTypeButton[@name="PrescriptionOrderFooter.addPrescriptionButton"]
+
+  - name: us.mappings.item.verifyAddToCartCTA
+    identifier: (//XCUIElementTypeButton[@name="stepper.mainButton"])[3]    
+
+  - name: us.mappings.item.addAPrescriptionTitle
+    identifier: //XCUIElementTypeStaticText[@name="Add a prescription"]
+
+  - name: us.mappings.visionItem.prescriptionName
+    identifier: VisionProfileViewController.profileView
+
+  - name: us.mappings.item.privacyPolicyCheckBox
+    identifier: AcknowledgementLabel.checkbox
+
+  - name: us.mappings.visionItem.prescriptionDob
+    identifier: TextFieldStackView.textField
+
+  - name: us.mappings.visionItem.addPrescriptionLink
+    identifier: Add prescription
+
+  - name: us.mappings.visionItem.chooseExistingCTA
+    identifier: Choose existing
+
+  - name: us.mappings.visionItem.addPrescriptionButton
+    identifier: SingleImageUploadViewController.addPrescriptionButton || ImageGrid.selectSquare
+  
+  - name: us.mappings.visionItem.addPrescription.AddPhoto
+    identifier: ImageGrid.selectSquare
+
+  - name: us.mappings.visionItem.verifyprescriptionContinueCTA
+    identifier: //XCUIElementTypeOther[@name="AddPrescriptionFooter.continueButton.bottomSheet"]
+
+  - name: us.mappings.visionItem.selectImage
+    identifier: (//XCUIElementTypeImage[contains(@name, "Photo")])[1] | (//XCUIElementTypeImage[contains(@name,"Screenshot")])[1]
+
+  - name: us.mappings.item.addAPrescription.replaceImage    
+    identifier: Replace photo || ImageSquare.deleteButton
+
+  - name: us.mappings.item.prescriptionFooter.continueButton
+    identifier: AddPrescriptionFooter.continueButton || PrescriptionFooter.continueButton
+
+  - name: us.mappings.visionItem.manuallyEnterPDLink
+    identifier: Manually enter PD instead || AddPDViewController.measureManuallyButton
+
+  - name: us.mappings.visionItem.prescriptionPD
+    identifier: TextFieldStackView.textField
+
+  - name: us.mappings.visionItem.termsAndConditionChechBox
+    identifier: AcknowledgementLabel.checkbox
+
+  - name: us.mappings.item.prescriptionFooter.measureNow
+    identifier: Measure now
+
+  - name: us.mappings.item.verifyYouHaveAddedPrescriptionText
+    identifier: //XCUIElementTypeStaticText[contains(@label, "You added your prescription")] | //XCUIElementTypeStaticText[contains(@label, "You've added your prescription")] | //XCUIElementTypeStaticText[contains(@label, "We've got your prescription")]
+
+  - name: us.mappings.item.vision.restrictedAdressText
+    identifier: //XCUIElementTypeStaticText[contains(@label,"Shipping of this product may be restricted")]
+
+  - name: us.mappings.item.toastMessage
+    identifier: #tbd     
+
+  - name: us.mappings.item.addPrescription.accessPhotosPopUp
+    identifier: (//XCUIElementTypeOther[@name="Horizontal scroll bar, 1 page"])[2] 
+
+  - name: us.mappings.item.addPrescription.accessPhotos.continue
+    identifier: PermissionPromptViewController.primaryActionButton
+
+  - name: us.mappings.item.addPrescription.photos.allowAccess
+    identifier: //XCUIElementTypeButton[@name="Allow Full Access"] | //XCUIElementTypeButton[@name="Allow Access to All Photos"]
+
+  - name: us.mappings.item.addPrescription.done   
+    identifier: Done
+
+  - name: us.mappings.item.compareSeller.returnPolicyBackButton
+    identifier: //XCUIElementTypeButton[@name="More seller options"]
+
+  - name: us.mappings.visionItem.addPrescription.addPatient
+    identifier: VisionProfileViewController.linkLabel 
+
+  - name: us.mappings.visionItem.addPatient.firstName
+    identifier: //XCUIElementTypeTextField[contains(@label, "First name")]
+
+  - name: us.mappings.visionItem.addPatient.lastName
+    identifier: //XCUIElementTypeTextField[contains(@label, "Last name")]
+
+  - name: us.mappings.visionItem.addPatient.dob
+    identifier: //XCUIElementTypeTextField[contains(@label, "Date of birth")]      
+
+  - name: us.mappings.item.ad.buyboxad.ATCbutton.incrementBtn  
+    identifier: (//XCUIElementTypeButton[@name="BuyBoxAdViewV1.stepperCartButton"])[2]//XCUIElementTypeButton[@name="stepper.incrementButton"]  
+
+  - name: us.mappings.item.ad.buyboxad.ATCbutton.decrementBtn
+    identifier: (//XCUIElementTypeButton[@name="BuyBoxAdViewV1.stepperCartButton"])[2]//XCUIElementTypeButton[@name="stepper.decrementButton"]      
+
+  - name: us.mappings.item.stepperLabel
+    identifier: (//XCUIElementTypeButton[@name="stepper.mainButton"])[4] 
+
+  - name: us.mappings.item.stepperTable.increment
+    identifier: //XCUIElementTypeTable[@name="ATCQuantityListViewController.tableView"]//XCUIElementTypeButton[@name="2"]
+
+  - name: us.mappings.item.stepperTable.decrement
+    identifier: //XCUIElementTypeTable[@name="ATCQuantityListViewController.tableView"]//XCUIElementTypeButton[@name="1"]    
+
+  - name: us.mappings.visionItem.PercentPromoT&CLink
+    identifier: VisionPromoSectionView.infoButton
+
+  - name: us.mappings.visionItem.PercentPromoBottomsheetTitle
+    identifier: VisionPromotionBottomSheetViewController.titleLabel
+
+  - name: us.mappings.visionItem.PercentPromoBottomsheetBackBtn
+    identifier: Go back
+
+  - name: us.mappings.visionItem.PercentPromoBottomsheetGotIt
+    identifier: Got it  
+
+  - name: us.mappings.visionItem.PercentPromoBottomsheetCloseBtn
+    identifier: VisionPromotionBottomSheetViewController_close    
+
+  - name: us.mappings.visionItem.nonPrescriptionRadioBtn
+    identifier: (//XCUIElementTypeButton[@name="LensCustomizationPurchaseRadioButtonView.radioButton"])[1] | //XCUIElementTypeButton[@name="LensCustomizationCardView.radioButton" and @label="Lenses as shown"]
+
+  - name: us.mappings.visionItem.prescriptionRadioBtn
+    identifier: (//XCUIElementTypeButton[@name="LensCustomizationPurchaseRadioButtonView.radioButton"])[2]  | //XCUIElementTypeButton[@name="LensCustomizationCardView.radioButton" and @label="Custom lenses"]
+
+  - name: us.mappings.item.selectLensCloseButton
+    identifier: //XCUIElementTypeButton[@name="Close"]     
+
+  - name: us.mappings.item.iTooltip
+    identifier: Info Lens type    
+
+  - name: us.mappings.item.lenseDemoTitle
+    identifier: //XCUIElementTypeStaticText[@name="Lens type"]
+
+  - name: us.mappings.item.lenseDemoGotIt
+    identifier: PrescriptionInfoViewController.footerView
+
+  - name: us.mappings.item.lenseDemoCloseBtn  
+    identifier: (//XCUIElementTypeButton[@name="Close"])[2]    
+
+  - name: us.mappings.item.nonConfigItemBundleTitle
+    identifier: //XCUIElementTypeStaticText[contains(@label, "This bundle includes")]
+
+  - name: us.mappings.item.nonConfigItemBundleoptions
+    identifier: HardBundlesSectionView.disclaimerLabel
+
+  - name: us.mappings.item.closeBtn  
+    identifier: Close        
+
+  - name: us.mappings.item.lensCustomizationBottomTrayCloseButton    
+    identifier: //XCUIElementTypeButton[@name="LensCustomizationBottomsheetViewController_close"] | //XCUIElementTypeButton[@name="LensCustomizationBottomsheetViewController_itemDetailCloseButton"]
+
+  - name: us.mappings.item.itemDetails.backOrderPriceGuarantee
+    identifier: PriceGuaranteeView.subtitle
+
+  - name: us.mapping.item.itemDetails.backOrderPriceGuaranteeDetailsButton
+    identifier: PriceGuaranteeView.subtitle || Details 
+
+  - name: us.mappings.item.itemDetails.backOrderPriceGuaranteeBottomSheetHeader
+    identifier: Backorder Price Guarantee || Backorder price guarantee details
+
+  - name: us.mappings.item.itemDetails.instructionReadingBanner
+    identifier: BackOrderPriceGuaranteeViewController.alert || Scroll to read the full terms before continuing.
+
+  - name: us.mappings.item.itemDetails.termsBottomsheetGotItButton
+    identifier: BackOrderPriceGuaranteeViewController.done || Got it
+
+  - name: us.mappings.item.standardPolycarbonate.title
+    identifier: //XCUIElementTypeStaticText[@name="Standard polycarbonate"]
+
+  - name: us.mappings.item.polyCarbonate
+    identifier: //XCUIElementTypeStaticText[@name="Polycarbonate"]
+
+
+  - name: us.mappings.item.premiumPolycarbonate.title
+    identifier: //XCUIElementTypeStaticText[@name="Premium polycarbonate"]
+
+  - name: us.mappings.item.standardHiIndex.title
+    identifier: //XCUIElementTypeStaticText[@name="Standard hi-index"]
+  
+  - name: us.mappings.item.walmart+BottomTrayCloseButton
+    identifier: Close || Go back
+
+  - name: us.mappings.item.verifyFitmentAddmoreInfoCTA
+    identifier: //XCUIElementTypeButton[@label="Add more info"]
+
+  - name: us.mappings.item.verifyFitmentWeNeedMoreInforMessage
+    identifier: //XCUIElementTypeStaticText[contains(@label, "We need a little more info to check fit")]
+ 
+  - name: us.mappings.item.heartIcon
+    identifier: //XCUIElementTypeButton[@name="HeroImageView.heartingView"]
+
+  - name: us.mappings.item.addToFavorites
+    identifier: //XCUIElementTypeTable[@name="ItemDetailsViewController.tableView"]/XCUIElementTypeCell[6]/XCUIElementTypeOther[2]//XCUIElementTypeButton[contains(@label,"Add to favorites")]    
+
+  - name: us.mappings.item.removeFromFavorites
+    identifier: //XCUIElementTypeTable[@name="ItemDetailsViewController.tableView"]/XCUIElementTypeCell[6]/XCUIElementTypeOther[2]//XCUIElementTypeButton[contains(@label,"Remove from favorites")]]   
+
+  - name: us.mappings.item.similarItemsCarousel.firstItemHeartIcon
+    identifier: (//XCUIElementTypeCollectionView[@name="CarouselView_recommendedProducts"])[1]/XCUIElementTypeScrollView/XCUIElementTypeCell[1]//XCUIElementTypeButton[contains(@name,"Add to favorites")]
+
+  - name: us.mappings.item.similarItemsCarousel.secondItemHeartIcon
+    identifier: (//XCUIElementTypeCollectionView[@name="CarouselView_recommendedProducts"])[1]/XCUIElementTypeScrollView/XCUIElementTypeCell[2]//XCUIElementTypeButton[contains(@name,"Add to favorites")]
+  
+  - name: us.mappings.item.itemDetails.backOrderArrivalDate
+    identifier: //XCUIElementTypeStaticText[@name="GlassBadge.label" and contains(@label, "On backorderArrives")]
+
+  - name: us.mappings.itempage.vision.customLenses
+    identifier: LensCustomizationView.rxAndPremiumCardView
+
+  - name: us.mappings.itempage.vision.framesOnly
+    identifier: LensCustomizationView.nonRXCardView
+
+  - name: us.mappings.item.verify.nonPrescriptionBlueLightFiltering
+    identifier: //XCUIElementTypeStaticText[@name="Non-prescription blue light filtering"]
+
+  - name: us.mappings.itempage.change.address
+    identifier: FulfillmentPickUpAndDropView.deliveryCentreButton || FulfillmentAddressView.ChangeAddressButton || FulfillmentAddressView.ChangeStoreButton
+
+  - name: us.mappings.item.snapEligibleLabel
+    identifier: //XCUIElementTypeStaticText[@name="SpecialBadgeView.descriptionLabel"]
+
+  - name: us.mappings.item.snapEligibleLabelOnCartPage
+    identifier: //XCUIElementTypeStaticText[@name="SNAP eligible"]

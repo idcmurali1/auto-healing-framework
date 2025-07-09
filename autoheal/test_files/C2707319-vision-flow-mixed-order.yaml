@@ -1,0 +1,201 @@
+general:
+  tags: C2707319, p1-ecomm-prod-e2e, unified-prod-e2e
+  inherit:
+    filesRunAll:
+      - us-errors-helpers.yaml
+  testCaseId: C2707319  
+
+  metadata:
+    - name: scenarioId
+      string: 458, PV006    
+scenarios:
+
+  - name: Before
+    before: true
+    endTestOnFailure: true
+    flow:
+
+#Get Environment Values
+      - executeFunction:
+          name: us.function.utils.getEnvironmentValue
+      # Set Platfrom Values
+      - executeFunction:
+          name: functions.utils.setPlatformInfo
+
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+      - log: 'R2_SUBFLOW_PRE_TRANSACTION'
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+  - name: Main
+    flow:
+      - log: Start Main
+
+      # Navigate onboarding to home
+      - executeFunction:
+          name: unified.us.functions.global.onboarding.navigateOnboardingToHome
+
+      - executeFunction:
+          name: unified.us.functions.home.navigateHomeToSignIn
+      
+      # Sign in with default account
+
+      - executeFunction:
+          name: unified.us.functions.global.authentication.signInAccountWithParams
+          params:
+            - name: android.email
+              string: us.data.prod.vision.android.email1
+            - name: android.password
+              string: us.data.prod.vision.password
+            - name: ios.email
+              string: us.data.prod.vision.email1
+            - name: ios.password
+              string: us.data.prod.vision.password
+              
+      - executeFunction:
+          name: unified.us.functions.global.navigation.accountToHome
+
+      - executeFunction:
+          name: unified.us.functions.item.visionItem.workAroundForGalleryPermissionIos
+
+     #Navigate to cart
+      - executeFunction:
+          name: unified.us.functions.global.navigation.toCartFromNavBar
+
+      - executeFunction:
+          name: unified.us.functions.cart.removeAllCartItems
+
+      - executeFunction:
+          name: unified.us.functions.global.navigation.backNavigation  
+
+      # add vision item (Eyeglasses) to cart
+      - executeFunction:
+          name: unified.us.functions.global.navigation.goToDeepLink
+          params:
+            - name: deepLinkUrl
+              string: us.data.flow.vision.prod.item1.deeplink    
+
+      # - executeFunction:
+      #     name: unified.us.functions.item.visionItem.verifyItemPage
+
+      - executeFunction:
+          name: unified.us.functions.item.visionItem.verifySelectLenses
+          params: 
+            - name: itemType
+              string: Eyeglasses            
+            - name: lensetype
+              string: Lense A   
+            - name: LenseMaterial
+              string: Standard 
+            - name: add-ons
+              string: No add-ons
+            - name: skipValidation
+              string: false                      
+
+      - executeFunction:
+          name: us.functions.item.visionItem.AddPrescription
+          params:
+            - name: name
+              string: PatientA              
+            - name: dob
+              string: us.data.flow.vision.prod.multiPrecriptionDob1
+            - name: PD
+              string: us.data.flow.vision.prod.multiPrecriptionPd1
+            - name: cartPage
+              string: false
+
+      - executeFunction:
+          name: unified.us.functions.item.addItemToCart
+# commented out to reduce execution time
+    #  # add second vision item (Eyeglasses) to cart
+    #   - executeFunction:
+    #       name: unified.us.functions.global.navigation.goToDeepLink
+    #       params:
+    #         - name: deepLinkUrl
+    #           string: us.data.flow.vision.prod.item2.deeplink
+
+    #   - executeFunction:
+    #       name: unified.us.functions.item.visionItem.verifySelectLenses
+    #       params: 
+    #         - name: itemType
+    #           string: Eyeglasses            
+    #         - name: lenseType
+    #           string: Lense A   
+    #         - name: LenseMaterial
+    #           string: Standard 
+    #         - name: add-ons
+    #           string: No add-ons
+    #         - name: skipValidation
+    #           string: true                        
+
+    # adding second item prescription from cart page to reduce execution time
+
+
+# #Adding image in iOS is currently an issue with R2, R2 team is looking into this 
+# #Also this function is not been unified. uses old legacy function
+# #Do not enable this, please check with Krish or Anirudh before enabling this function 
+# # enabling for regression testing
+#       - executeFunction:
+#           name: us.functions.item.visionItem.AddPrescription
+#           params:
+#             - name: name
+#               string: PatientB              
+#             - name: dob
+#               string: us.data.flow.vision.prod.multiPrecriptionDob1
+#             - name: PD
+#               string: us.data.flow.vision.prod.multiPrecriptionPd1
+#             - name: cartPage
+#               string: false
+
+#       - executeFunction:
+#           name: unified.us.functions.item.addItemToCart   
+
+      # add Sunglass item to cart
+
+      - executeFunction:
+          name: unified.us.functions.global.navigation.goToDeepLink
+          params:
+            - name: deepLinkUrl
+              string: us.data.flow.vision.prod.sunglassesItem1.deeplink
+
+      - executeFunction:
+          name: unified.us.functions.item.sunglasses.nonprescriptionFlow
+
+      - executeFunction:
+          name: unified.us.functions.item.addItemToCart
+
+      - executeFunction:
+          name: unified.us.functions.global.navigation.toCartFromNavBar
+
+      - executeFunction:
+          name: unified.us.functions.cart.verifyVisionItemTile  
+
+# commented out to reduce execution time
+    #  # Verify Eyeglasses 20% discount on cart page    
+    #   - executeFunction:
+    #       name: unified.us.functions.cart.verifyDiscountOnVisionItem  
+    #       params:
+    #         - name: itemType
+    #           string: Eyeglasses
+
+     # add non-vision item to cart
+
+      - executeFunction:
+          name: unified.us.functions.cart.P13NCarousel.addNonVisionItem
+          
+      # Go to checkout
+      - executeFunction:
+          name: unified.us.functions.cart.continueToCheckout
+
+      - executeFunction:
+          name: unified.us.functions.reviewOrder.verifyVisionItemTile
+
+      - storeIn:
+          key: testStatus
+          value: passed
+
+  - name: After
+    after: true
+    useTestConfigErrors: false
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.afterSteps

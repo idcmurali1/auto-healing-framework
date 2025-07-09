@@ -1,0 +1,3546 @@
+functions:
+  - name: unified.us.functions.item.selectTireInstallationFromS2SItemPage
+    flow:
+      - if:
+          condition: ${checkboxPresent}
+          then:    
+            - if:
+                identifier:
+                  present:
+                  - identifier: us.mappings.item.tireInstallationRadioButtonNotSelected
+                then:
+                  - click:
+                      identifier: us.mappings.item.tireInstallationRadioButtonNotSelected
+                      wait: 3000
+                else:
+                  - if:
+                      condition: ${platform} == 'iOS'
+                      then:
+                      - try:
+                          flow:
+                            - verifyIdentifier:
+                                value:
+                                  - identifier: us.mappings.item.getExpertTireInstallationCheckBox 
+                                    equals: 1
+                            - log : checkbox already selected 
+                          catch:
+                            flow:
+                              - click:
+                                  identifier: us.mappings.item.getExpertTireInstallationCheckBox   
+
+                  - if:
+                      condition: ${platform} == 'Android'
+                      then:
+                        - try:
+                            flow:
+                              - verifyIdentifier:
+                                  checked:
+                                    - identifier: us.mappings.item.getExpertTireInstallationCheckBox 
+                                      value: true
+                              - log : checkbox already selected 
+                            catch:
+                              flow:
+                                - click:
+                                    identifier: us.mappings.item.getExpertTireInstallationCheckBox       
+  #Item return Details Link
+  - name: unified.us.functions.item.verifyReturnDetailsLink
+    flow:
+      - sleep:
+          duration: 5000
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.item.productReturnInfoDetailsLink
+          position: center
+      - click:
+          identifier: us.mappings.item.productReturnInfoDetailsLink
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.returnPolicyPageLabel
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.global.closeButton
+          then:
+            - click:
+                identifier: us.mappings.global.closeButton 
+          else:
+            - click:
+                identifier: us.mappings.item.backButton
+
+  - name: unified.us.functions.item.verifyGiftEligibleLearnMoreLink
+    flow:
+      - executeFunction:
+          name: us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.giftEligibleLearnMoreLink
+            - name: direction
+              string: down
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.giftEligibleLearnMoreLink
+
+  - name: unified.us.functions.item.verifyReviewsScreenAndSubmitReview
+    flow:
+      - executeFunction:
+          name: us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string:  us.mappings.item.reviewLink
+            - name: direction
+              string: up
+      - verifyIdentifier:
+          present:
+              - identifier: us.mappings.item.reviewLink
+      - click:
+          identifier: us.mappings.item.reviewLink
+      - verifyIdentifier:
+          timeout: 370000
+          present:
+              - identifier: us.mappings.item.customerReviewsListSubpage.title
+
+  - name: unified.us.functions.item.verifyCCLearnHowLink
+    flow:
+      - executeFunction:
+          name: us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.ccLearnHowLink
+            - name: direction
+              string: down
+            - name: scrollLimit
+              string: 15
+      - executeFunction:
+          name: us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.ccLearnHowLink
+            - name: direction
+              string: down
+      - if:
+          identifier:
+            notPresent:
+              - identifier: us.mappings.item.ccLearnHowLink
+          then:
+              - failTest:
+                  message: "FAILURE - ${env} - CreditCard Learn Link is not displayed "
+      - verifyIdentifier:
+          present:
+              - identifier: us.mappings.item.ccLearnHowLink
+      - click:
+          identifier: us.mappings.item.ccLearnHowLink
+      - sleep:
+          duration: 4000
+      - verifyIdentifier:
+          present:
+              - identifier: us.mappings.item.ccLearnHowLinkRedirection
+          text:
+            - identifier: us.mappings.item.ccLearnHowLinkRedirection
+              contains: 10% cash back at Walmart in-store or online
+
+      - click:
+          identifier: us.mappings.item.ccLinkCloseButton
+
+
+  - name: unified.us.functions.item.addItemToCart
+    flow:
+      - storeIn:
+          key: executionStage
+          value: Transactions
+      - executeFunction:
+          name: unified.us.functions.item.validateAndClickAddToCartButton
+      - if:
+          condition: ${skipPostAddToCartSteps} == false
+          then:
+            # for faster execution in IOS
+            - if:
+                condition: ${platform} == 'iOS'
+                then:
+                  - executeFunction:
+                      name: unified.us.functions.global.navigation.goToDeepLink
+                      params:
+                        - name: deepLinkUrl
+                          string: walmart://home
+                  - executeFunction:
+                      name: unified.us.functions.home.closeWPlusPromotionPopUpIfDisplayed
+                else:
+                  - executeFunction:
+                      name: unified.us.functions.item.postAddToCartSteps
+      - storeIn:
+          key: skipPostAddToCartSteps
+          value: false
+      - storeIn:
+          key: apiFetch
+          value: false
+
+  - name: unified.us.functions.item.preAddToCartSteps
+    flow:
+      - try:
+          flow:
+            - sleep:
+                duration: 2000
+            - verifyIdentifier:
+                timeout: 3000
+                value:
+                  - identifier: us.mappings.item.addToCartCheckItemAdded
+                    contains: "1"
+            - click:
+                identifier: us.mappings.cart.itemDecrementButton
+            - sleep:            
+                duration: 2000
+          catch:
+            flow:
+              - log: Item wasn't Added initially, continuing with scenario
+
+  - name: unified.us.functions.item.validateAndClickAddToCartButton
+    flow:
+      - try:
+          flow:
+            - verifyIdentifier:
+                timeout: 200000
+                present:
+                  - identifier: us.mappings.item.addToCartButton
+            - log: ATC button present
+            - if:
+                condition: ${platform} == 'iOS'
+                then:
+                  - executeFunction:
+                      name: unified.us.functions.utils.scrollIfNotVisible
+                      params:
+                        - name: identifier
+                          string: us.mappings.item.addToCartButton
+                        - name: direction
+                          string: down 
+                        - name: scrollLimit
+                          string: 4           
+            - click:
+                identifier: us.mappings.item.addToCartButton   
+          catch:
+            flow:
+              - failTest:
+                  message: "DATA_FAILURE - ${env} - ADD TO CART button not displayed"          
+
+  - name: unified.us.functions.item.postAddToCartSteps
+    flow:
+      - try:
+          flow:
+            - click:
+                identifier: us.mappings.item.petrxAddToCartVetConfirmatiomGotItButton
+          catch:
+            flow:
+              - log: No Petrx item vet confirmation pop up
+      - try:
+          flow:
+            - click:
+                identifier: us.mappings.item.accInstallationBottomSheetClose
+          catch:
+            flow:
+              - log: No ACC pop up screen displayed
+      - try:
+          flow:
+            - click:
+                identifier: us.mapping.item.postItemAddToCartViewOverlay.closeButton
+          catch:
+            flow:
+              - log: No PAC overlay pop up screen displayed
+      - try:
+          flow:
+            - click:
+                identifier: us.mapping.item.addWalmartProtectionPlan.closeButton
+          catch:
+            flow:
+              - log: No WPP pop up screen displayed
+      - executeFunction:
+          name: unified.us.functions.item.closeItemPage      
+
+  - name: unified.us.functions.item.verifyS2SItemPage
+    flow:
+      - sleep: 
+          duration: 5000
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.checkForFitVehicle
+            - name: direction
+              string: down 
+            - name: scrollPosition
+              string: center
+      - try:
+          flow:    
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.checkForFitVehicle
+          catch:
+            flow:
+              - failTest:
+                  message: "FAILURE - ${env} - Add Vehicle widget is not displayed"
+      - sleep: 
+          duration: 3000
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - scroll:
+                direction: down
+                untilIdentifier: us.mappings.item.getExpertTireInstallationText
+                position: center
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.idontNeedInstallationRadioButtonSelected
+          then:
+            - verifyIdentifier:
+                present:
+                    - identifier: us.mappings.item.getExpertTireInstallationText
+                    - identifier: us.mappings.item.tireInstallationRadioButtonNotSelected
+                    - identifier: us.mappings.item.idontNeedInstallationRadioButtonSelected
+          else:
+            - verifyIdentifier:
+                present:
+                    - identifier: us.mappings.item.getExpertTireInstallationText 
+                    - identifier: us.mappings.item.getExpertTireInstallationCheckBox        
+
+      - if:
+          condition: ${platform} == 'iOS'
+          then:
+            - if:
+                identifier:
+                  present:
+                    - identifier: us.mappings.item.getExpertTireInstallationCheckBox 
+                then:
+                  - log: Checkbox is present
+                  - storeIn:
+                      key: checkboxPresent
+                      value: true  
+                  - try:
+                      flow:
+                        - verifyIdentifier:
+                            value:
+                              - identifier: us.mappings.item.getExpertTireInstallationCheckBox
+                                equals: 1
+                        - storeIn:
+                            key: checkboxSelected
+                            value: true
+                      catch:
+                        flow:
+                          - log: Checkbox is not selected. Working as expected
+                          - storeIn:
+                              key: checkboxSelected
+                              value: false
+                  - if:
+                      condition: ${checkboxSelected}
+                      then:
+                        - failTest:
+                            message: ENV_FAILURE - ${env} - Check box is selected by default  
+                else:  
+                  - log: Checkbox is not present
+                  - storeIn:
+                      key: checkboxPresent
+                      value: false  
+
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - if:
+                identifier:
+                  present:
+                    - identifier: us.mappings.item.getExpertTireInstallationCheckBox 
+                then:
+                  - log: Checkbox is present
+                  - storeIn:
+                      key: checkboxPresent
+                      value: true  
+                else:  
+                  - log: Checkbox is not present
+                  - storeIn:
+                      key: checkboxPresent
+                      value: false 
+
+  - name: unified.us.functions.item.closeItemPage
+    flow:
+      - try:
+          flow:
+            - click:
+                identifier: us.mappings.item.pacCloseButton
+          catch:
+            flow:
+              - log: PAC not found
+      - try:
+          flow:
+            - click:
+                identifier: us.mappings.item.closeButton
+          catch:
+            flow:
+              - log: Item page closed
+              - if:
+                  identifier:
+                    present:
+                      - identifier: us.mappings.itemPage.itemName
+                  then:
+                    - goBack: true
+      - verifyIdentifier:
+          notPresent:
+            - identifier: us.mappings.item.productNameTileGeneric
+
+
+
+ # This function is used to verify Wplus signup banner on item page. 
+ # This can be used for regular $98/year price validations or for ongoing offers like 50% off 49$/year offers.
+ # [mandatory] ${onGoingOffer} - true/false
+  - name: unified.us.functions.item.wplus.validatePresencOfSignUpModuleInItemPage
+    flow:
+      #Scroll to view the W+ Savings Option on Item Page
+     - if:
+        condition: ${onGoingOffer}
+        then:
+           - executeFunction:
+              name: us.functions.utils.scrollIfNotVisible
+              params:
+                - name: identifier
+                  string: us.mappings.wplus.wplusSignUpWithOffer
+                - name: direction
+                  string: down  
+
+           - verifyIdentifier:
+                  present:
+                    - identifier: us.mappings.wplus.wplusSignUpWithOffer
+                    
+        else:
+          - executeFunction:
+              name: us.functions.utils.scrollIfNotVisible
+              params:
+                - name: identifier
+                  string: us.mappings.wplus.itempage.wplusSignupCheckBox
+                - name: direction
+                  string: down  
+
+          - verifyIdentifier:
+                  present:
+                    - identifier: us.mappings.wplus.itempage.wplusSignupCheckBox
+
+          - click:
+                identifier: us.mappings.wplus.itempage.wplusSignupCheckBox
+
+          # please note we need to verify the text after text box selection
+          # currently $49 offer is in progress so unable to get identifiers for verification
+ 
+
+  - name: unified.us.functions.item.checkItemAvailable
+    flow:
+    - storeIn:
+        key: failedItems
+        value: 'Items used : '
+    - loop:
+        each: '${itemArray}'
+        storeElement: items
+        storeIndex: itemIndex
+        flow:
+          - executeFunction:
+              name: unified.us.functions.global.navigation.goToDeepLink
+              params:
+                - name: deepLinkUrl
+                  string: 'walmart://item/$items'
+          - sleep:
+              duration: 5000
+          - if:
+              identifier:
+                present:
+                  - identifier: us.mappings.item.addToCartButton
+              then:
+                - log: $items Item available
+                - break: true
+              else:
+                - log: $items Item not available.
+                - storeIn:
+                    key: failedItems
+                    value: '${failedItems} , $items'
+    - storeIn:
+        key: itemDataDetails
+        value: '${failedItems}'
+
+  - name: unified.us.functions.item.ad.validateBuyboxAdview
+    flow:
+    - sleep:
+        duration: 5000
+    - executeFunction:
+        name: unified.us.functions.utils.scrollIfNotVisible
+        params:
+          - name: identifier
+            string: us.mappings.item.ad.buyboxAd
+          - name: direction
+            string: down
+          - name: scrollPosition
+            string: center
+    - verifyIdentifier:
+        present:
+          - identifier: us.mappings.item.ad.buyboxAd
+          - identifier: us.mappings.item.ad.buyboxRatings
+          - identifier: us.mappings.item.ad.buyboxReviews
+          - identifier: us.mappings.item.ad.buyboxFulfillmentInfo
+          - identifier: us.mappings.item.ad.buyboxSponsoredLabel
+    - if:
+        condition: ${platform} == 'iOS'
+        then:
+          - verifyIdentifier:
+              label:
+                - identifier: us.mappings.item.ad.buyboxSponsoredLabel
+                  contains: us.data.sbaAd.prod.textSponsored
+    - if:
+        condition: ${platform} == 'Android'
+        then:
+          - verifyIdentifier:
+              text:
+                - identifier: us.mappings.item.ad.buyboxSponsoredLabel
+                  contains: us.data.sbaAd.prod.textSponsored
+    - sleep:
+        duration: 5000
+    - if:
+        identifier:
+          present:
+            - identifier: us.mappings.item.ad.buyboxad.ATCbutton
+        then:
+          - log: Sponsored Ad ATC Button present
+          - click:
+              identifier: us.mappings.item.ad.buyboxad.ATCbutton
+    - executeFunction:
+        name: unified.us.functions.item.verifyStepper
+    - click:
+        identifier: us.mappings.item.ad.buyboxAd
+        wait: 5000
+    - verifyIdentifier:
+        present:
+          - identifier: us.mappings.item.ad.buyboxRatings
+
+  - name: unified.us.functions.item.verifyStepper
+    flow:
+      - if:
+          condition: ${platform} == 'iOS'
+          then:
+            - verifyIdentifier:
+                label:
+                  - identifier: us.mappings.item.ad.buyboxad.ATCbuttonCount
+                    contains: 1
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - verifyIdentifier:
+                text:
+                  - identifier: us.mappings.item.ad.buyboxad.ATCbuttonCount
+                    contains: 1      
+      - log: Default QTY '1' is displayed.  
+      - log: Verifying if stepper value can be increased.
+      - sleep:
+          duration: 3000
+      - if:
+          identifier:
+            notPresent:
+              - identifier: us.mappings.item.ad.SponsoredAd.ATCbutton.increment
+          then:
+            - click:
+                identifier: us.mappings.item.ad.buyboxad.ATCbuttonCount
+      - click: 
+          identifier: us.mappings.item.ad.SponsoredAd.ATCbutton.increment
+      - if:
+          condition: ${platform} == 'iOS'
+          then:
+            - verifyIdentifier:
+                label:
+                  - identifier: us.mappings.item.ad.buyboxad.ATCbuttonCount
+                    contains: 2
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - verifyIdentifier:
+                text:
+                  - identifier: us.mappings.item.ad.buyboxad.ATCbuttonCount
+                    contains: 2            
+      - log: Stepper value is increased and QTY = 2
+      - log: Verifying if stepper value can be decreased.
+      - sleep:
+          duration: 3000      
+      - if:
+          identifier:
+            notPresent:
+              - identifier: us.mappings.item.ad.SponsoredAd.ATCbutton.decrement
+          then:
+            - click:
+                identifier: us.mappings.item.ad.buyboxad.ATCbuttonCount         
+      - click: 
+          identifier: us.mappings.item.ad.SponsoredAd.ATCbutton.decrement
+      - if:
+          condition: ${platform} == 'iOS'
+          then:
+            - verifyIdentifier:
+                label:
+                  - identifier: us.mappings.item.ad.buyboxad.ATCbuttonCount
+                    contains: 1
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - verifyIdentifier:
+                text:
+                  - identifier: us.mappings.item.ad.buyboxad.ATCbuttonCount
+                    contains: 1           
+      - log: Stepper value is decreased and QTY = 1 
+
+  - name: unified.us.functions.item.ad.validateCarousel1
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.myitems.sponsored.productyoumaylikeText
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center 
+      - if :
+          identifier:
+            notPresent:
+              - identifier: us.mappings.myitems.sponsored.label
+          then:
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.myitems.sponsored.label
+                  - name: direction
+                    string: down
+                  - name: scrollPosition
+                    string: center                 
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.myitems.sponsored.label
+      - verifyIdentifier:
+          present:
+              - identifier: us.mappings.myitems.sponsored.productGrid 
+              - identifier: us.mappings.myItems.atc.quantityAdded
+              - identifier: us.mappings.myitems.sponsored.label               
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.sponsored.ratings
+                  - name: direction
+                    string: down
+                  - name: scrollPosition
+                    string: center                          
+      - verifyIdentifier:
+          present:
+              - identifier: us.mappings.item.sponsored.ratings
+      - click:
+          identifier: us.mappings.myItems.atc.quantityAdded
+
+     # Verify Item stepper
+      - executeFunction:
+          name: unified.us.functions.item.verifyStepper  
+                
+      - click:
+          identifier: us.mappings.myitems.sponsored.productGrid 
+      - verifyIdentifier:
+          present:
+              - identifier: us.mappings.item.sponsored.item.brandName
+              - identifier: us.mappings.item.sponsored.item.title
+      - executeFunction:
+          name: unified.us.functions.item.closeItemPage
+
+  - name: unified.us.functions.item.ad.validateSpCarouselAds
+    flow:
+      - sleep: 
+          duration: 10000
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.item.ad.spCarouselView
+      - sleep:
+          duration: 3000
+      - scroll:
+          direction: left
+          scrollLimit: 2
+          withinIdentifier: us.mappings.item.ad.spCarouselView
+      - sleep: 
+          duration: 3000       
+      - scroll:
+          direction: right
+          scrollLimit: 2 
+          withinIdentifier: us.mappings.item.ad.spCarouselView
+      - sleep: 
+          duration: 3000
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.ad.SpCarouseladsRatings
+                  - name: direction
+                    string: down
+                  - name: scrollPosition
+                    string: center 
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.ad.paneFirstitem
+            - identifier: us.mappings.item.ad.paneSeconditem  
+            - identifier: us.mappings.item.ad.SpCarouseladsRatings
+            - identifier: us.mappings.item.ad.SpCarouseladsReviews     
+
+      - if:
+          condition: ${platform} == 'iOS'
+          then:
+                  - click:
+                          identifier: us.mappings.item.ad.SpCarouselads.ATCbutton
+                  - verifyIdentifier:
+                            label:
+                              - identifier: us.mappings.item.verifyAddToCartCTA
+                                contains: 1
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+                   - click:
+                        identifier: us.mappings.item.ad.SponsoredAd.ATCbutton
+                   - verifyIdentifier:
+                            text:
+                              - identifier: us.mappings.item.ad.buyboxad.ATCbuttonCount
+                                contains: 1 
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.ad.paneFirstitem 
+      - click: 
+          identifier: us.mappings.item.ad.paneFirstitem
+      - sleep:
+         duration: 5000
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.ad.SponsoredAd.item.brandName
+            - identifier: us.mappings.item.ad.SponsoredAd.item.title
+
+  - name: unified.us.functions.item.ad.validateMarquee1Ad
+    flow:
+      - sleep: 
+          duration: 5000
+      - loop:
+         begin: 1
+         end: 3
+         flow:    
+           - executeFunction:
+               name: unified.us.functions.utils.scrollIfNotVisible
+               params:
+                 - name: identifier
+                   string: us.mappings.item.ad.Marquee1
+                 - name: direction
+                   string: down
+                 - name: scrollPosition
+                   string: center
+                 - name: scrollLimit
+                   string: 10
+      - try:
+          flow: 
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.ad.Marquee1Logo
+                  - identifier: us.mappings.item.ad.Marquee1Headline
+                  - identifier: us.mappings.search.ad.Marquee1SponsoredText
+            - if:
+                condition: ${platform} == 'iOS'
+                then:
+                        - verifyIdentifier:
+                            label:
+                              - identifier: us.mappings.search.ad.Marquee1SponsoredText
+                                equals: Sponsored
+            - if:
+                condition: ${platform} == 'Android'
+                then:
+                        - verifyIdentifier:
+                            text:
+                              - identifier: us.mappings.search.ad.Marquee1SponsoredText
+                                equals: Sponsored 
+          catch:
+            flow:
+              - failTest:
+                  message: ENV_FAILURE - ${env} - Marquee ads missing in item page
+            
+      - click: 
+          identifier: us.mappings.item.ad.Marquee1
+
+
+  - name: unified.us.functions.item.verifyStoreNameandAddress.checkIntent 
+    flow:
+      - sleep:
+          duration: 5000
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.item.fulfillmentContainerView
+          scrollLimit: 2
+          position: center
+          timeout: 500000 
+      - if:
+          identifier:
+            notPresent:
+              - identifier: us.mappings.item.switching.fulfillment.storeName
+          then:
+            - click:
+               identifier: us.mappings.item.switching.fulfillment.intentTextSwitching
+               wait: 3000
+            - click:
+                identifier: us.mappings.item.switching.fulfillment.intentText
+      - verifyIdentifier:
+          timeout: 100000
+          present:
+            - identifier: us.mappings.item.switching.fulfillment.intentText
+            - identifier: us.mappings.item.switching.fulfillment.storeName 
+            - identifier: us.mappings.item.switching.fulfillment.storeName
+            
+  - name: unified.us.functions.item.validatepreOrderItemDetails_addItemToCart
+    flow:
+      - sleep:
+          duration: 15000
+      - executeFunction:
+          name: unified.us.functions.utils.tryAgainWhenThereIsError
+      - verifyIdentifier:
+          timeout: 50000
+          present:
+            - identifier: us.mappings.item.preOrderButton
+            - identifier: us.mappings.item.producttile.preorderText
+            - identifier: us.mappings.item.producttile.preorderReleaseDateText
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - verifyIdentifier:
+                text:
+                  - identifier: us.mappings.item.producttile.preorderText
+                    equals: Preorder
+          else:
+            - verifyIdentifier:
+                label:
+                  - identifier: us.mappings.item.producttile.preorderText
+                    contains: Preorder
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.preorderShipping.shippingText
+            - name: direction
+              string: down
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - getString:
+                identifier: us.mappings.item.preorderItem.arrivesByText
+                attribute: text
+                storeIn: text
+          else:
+            - getString:
+                identifier: us.mappings.item.preorderItem.arrivesByText
+                attribute: label
+                storeIn: text
+      - log: Preorder item page 'expectedArrivalLabel' - ${text}
+      - if:
+          condition: ${platform} == 'iOS'
+          then:
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.preOrderButton
+                  - name: direction
+                    string: down
+                  - name: scrollLimit
+                    string: 4
+      - click:
+          identifier: us.mappings.item.preOrderButton
+      - sleep:
+          duration: 7000
+      - executeFunction:
+          name: unified.us.functions.item.postAddToCartSteps
+
+  - name: unified.us.functions.wplus.verifySavewithWalmartPluspill
+    flow:
+      - executeFunction:
+          name: us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.wplus.SavewithWalmartPluspill
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.wplus.SavewithWalmartPluspill
+
+  - name: unified.us.functions.wplus.itempage.verifyFreeShippinglabel
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mapping.item.itemDetails.iWantShippingAndDeliveryLabel
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center
+      - if: 
+          identifier: 
+            present: 
+              - identifier: us.mapping.item.itemDetails.checkBoxNotSelectedToOptInWplus
+          then: 
+            - click :
+                identifier: us.mapping.item.itemDetails.checkBoxNotSelectedToOptInWplus
+                wait: 2000       
+      - if:
+          identifier:
+            present:
+              - identifier: us.mapping.item.itemDetails.checkBoxSelectedToOptInWplus
+          then:
+            # - scroll:
+            #     direction: down        
+            #     untilIdentifier: us.mappings.wplus.itempage.freedeliveryfromstorelabel
+            #     position: center
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.wplus.itempage.freedeliveryfromstorelabel
+                  - identifier: us.mappings.wplus.itempage.freeshippinglabel
+
+  # In Cart page Scroll left and right p13N ads and select add to cart
+  - name: unified.us.functions.item.validatep13NadsOnCartPageAndSelectItem
+    flow:
+      - executeFunction:
+          name: unified.us.functions.cart.scrollToTopOfCart
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.p13nCarouselTitleCartPage
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center
+      - scroll:
+          direction: left
+          scrollLimit: 2                            
+          withinIdentifier: us.mappings.item.p13nCarouselTitleCartPage
+          position: center
+      - scroll:
+          direction: right
+          scrollLimit: 2                            
+          withinIdentifier: us.mappings.item.p13nCarouselTitleCartPage
+          position: center
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.p13n_CarouselView_ATC 
+          then:
+            - log: Add button found  
+            - click:
+                identifier: us.mappings.item.p13n_CarouselView_ATC 
+          else:
+            - click:
+                identifier: us.mappings.item.carousel.options.btn
+            - executeFunction:
+                name: unified.us.functions.item.addItemToCart
+                params:
+                  - name: skipPostAddToCartSteps
+                    string: true
+      - if:
+          identifier:
+            present:
+                - identifier: us.mappings.carePlans.declineButton
+          then:
+            - click:
+               identifier: us.mappings.carePlans.declineButton
+      - executeFunction:
+          name: unified.us.functions.item.postAddToCartSteps
+
+  # In PAC screen Scroll left and right p13N ads and select add to cart
+  - name: unified.us.functions.item.validatePACScreenAndSelectItemFromPACToATC
+    flow:
+      - executeFunction:
+          name: unified.us.functions.item.addItemToCart
+          params:
+            - name: skipPostAddToCartSteps
+              string: true
+      - if:
+          identifier:
+            timeout: 5000
+            present:
+              - identifier: us.mappings.carePlans.declineButton
+          then:
+            - click:
+                identifier: us.mappings.carePlans.declineButton
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.pacScreenCarouselView
+          then:
+            - log : Scroll carousel view
+            - scroll:
+                direction: left
+                scrollLimit: 2
+                withinIdentifier: us.mappings.home.p13nCarouselView
+                position: center
+            - scroll:
+                direction: right
+                scrollLimit: 2
+                withinIdentifier: us.mappings.home.p13nCarouselView
+                position: center
+          else:
+            - log : Scroll stop carousel view
+            - break: true
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.carousel.options.btn
+          then:
+            - log : Carousel view clicking on item
+            - click:
+                identifier: us.mappings.item.carousel.options.btn
+          else:
+            - log : No carousel view present
+            - break: true
+    #If Product grid view is present
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.pacproductgridview
+          then:
+            - log : inside product view
+            - click:
+                identifier: us.mappings.item.pacproductgridview_item1
+          else:
+            - log : Breaking product view
+            - break: true
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.ad.SponsoredAd.ATCbutton
+          then:
+            - click:
+                identifier: us.mappings.item.ad.SponsoredAd.ATCbutton
+          else:
+            - log : Breaking Ads View
+            - break: true
+            - executeFunction:
+                name: unified.us.functions.item.addItemToCart
+                params:
+                  - name: skipPostAddToCartSteps
+                    string: true
+            - if:
+                identifier:
+                  timeout: 5000
+                  present:
+                    - identifier: us.mappings.carePlans.declineButton
+                then:
+                  - click:
+                      identifier: us.mappings.carePlans.declineButton
+                else:
+                  - log : Breaking Ads View
+                  - break: true
+     #View cart on PAC if present
+      - if:
+          identifier:
+            present:
+                   - identifier: us.mappings.item.viewCartBtnOnPAC
+          then:
+            - click:
+                identifier: us.mappings.item.viewCartBtnOnPAC
+          else:
+            - log : cart Btn on pac not available navigating to cart
+
+  - name: unified.us.functions.addNonWinningOfferItem.cartItemsPresent
+    flow:
+    #  Scroll to More seller options
+      - executeFunction:
+          name: us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.moreSellerOptions
+            - name: direction
+              string: down   
+            - name: scrollPosition
+              string: center  
+      - verifyIdentifier:
+           present: 
+            - identifier: us.mappings.item.moreSellerOptions        
+      - log: More seller options reached....
+      - sleep: 
+           duration: 2000    
+
+    # Verify and click "Compare all sellers"    
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.marketplace.compareSellerButton        
+          then:
+              - verifyIdentifier:
+                  present: 
+                    - identifier: us.mappings.marketplace.compareSellerButton 
+              - log: lets click the Compare all sellers link...                 
+              - click:
+                  identifier: us.mappings.marketplace.compareSellerButton 
+              - log: Compare all sellers link clicked
+
+      # Verify we are on More seller option screen
+              - verifyIdentifier:
+                  present: 
+                    - identifier: us.mappings.marketplace.compareSellerAddToCartButton
+
+      # Verify Return details screen
+              - click:
+                  identifier: us.mappings.item.compareSeller.detailsButton
+              - verifyIdentifier:
+                  present: 
+                    - identifier: us.mappings.item.compareSeller.returnPolicyHeader
+                    - identifier: us.mappings.item.compareSeller.returnWithin
+              - if:
+                  identifier:
+                    present:
+                      - identifier: us.mappings.item.compareSeller.returnPolicyBackButton
+                  then:
+                    - click:  
+                        identifier: us.mappings.item.compareSeller.returnPolicyBackButton
+                  else:
+                    - click:
+                        identifier: us.mappings.global.closeButton
+              
+      # Add item to the cart
+              - click:
+                  identifier: us.mappings.marketplace.compareSellerAddToCartButton
+              - if:
+                  identifier:
+                    present:
+                      - identifier: us.mappings.marketplace.moreSellersCloseButton
+                  then:
+                    - click:
+                        identifier: us.mappings.marketplace.moreSellersCloseButton
+                  else:
+                    - click:
+                        identifier: us.mappings.buyNow.navigateback
+              - sleep: 
+                  duration: 2000
+              - if:
+                  identifier:
+                    notPresent:
+                      - identifier: us.mappings.cartContainsItem
+                  then:
+                    - click: 
+                        identifier: us.mappings.cart.itemDecrementButton
+          else:
+            - failTest:
+                message: FAILURE - ${env} - Compare seller link  not visible
+
+  - name: unified.us.functions.reviewSellerInfo.thenAdd.marketplaceItem
+    flow:
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.orderDetails.sellerReviewsStars.module
+          position: center
+          scrollLimit: 4
+      - log: finished scrolling....
+      - sleep: 
+           duration: 2000
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.fulfillment.showShippingDeliveryPickup.button
+          then:
+            - click: 
+                identifier: us.mappings.item.fulfillment.showShippingDeliveryPickup.button
+            - log: Fulfillment options field was suppressed.    
+          else:
+            - log: Fulfillment options field is not suppressed.  
+      - if:
+          identifier:
+            notPresent:
+              - identifier: us.mappings.orderDetails.sellerTitle
+          then:
+            - scroll:
+                direction: down
+                untilIdentifier: us.mappings.orderDetails.sellerTitle
+                position: center 
+
+      - verifyIdentifier:
+          present: 
+            - identifier: us.mappings.orderDetails.sellerTitle 
+            - identifier: us.mappings.orderDetails.sellerReviewsStars        
+            - identifier: us.mappings.orderDetails.sellerReviewsStars.module 
+
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - verifyIdentifier:
+                text:
+                  - identifier: us.mappings.orderDetails.sellerTitle 
+                    contains: Sold by   
+                  - identifier: us.mappings.orderDetails.sellerReviewsStars.count 
+                    contains: seller review
+      - if:
+          condition: ${platform} == 'iOS'
+          then:
+            - verifyIdentifier:
+                label:
+                  - identifier: us.mappings.orderDetails.sellerTitle 
+                    contains:  on LocalFinds
+                  - identifier: us.mappings.orderDetails.sellerReviewsStars.count 
+                    contains: seller review
+
+
+  - name: unified.us.functions.item.wplus.validateWplusFreeShippingTextPresent
+    flow:
+      - executeFunction:
+            name: unified.us.functions.utils.scrollIfNotVisible
+            params:
+              - name: identifier
+                string: us.mappings.wplus.freeShippingDiscountText
+              - name: direction
+                string: down
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.wplus.freeShippingDiscountText
+
+  - name: unified.us.functions.marketplace.itempage.restored.validations
+    flow:
+      - verifyIdentifier:
+          timeout: 90000
+          present:
+            - identifier: us.mappings.buyNow.buyNowButton
+            - identifier : us.mappings.item.addToCartButton
+      - if: 
+          identifier: 
+            present: 
+              - identifier: us.mappings.global.onboarding.shareLocation.continueButton
+          then: 
+            - click :
+                identifier: us.mappings.global.onboarding.shareLocation.continueButton
+      - if: 
+          identifier: 
+            present: 
+              - identifier: us.mappings.global.onboarding.askAppNotToTrackButton
+          then: 
+            - click :
+                identifier: us.mappings.global.onboarding.askAppNotToTrackButton
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.itemScreen.itemDescription.conditionLabel
+            - identifier: us.mappings.search.conditions.restored.item
+            - identifier: us.mappings.search.pdp.productImage
+ 
+
+
+  - name: unified.us.function.item.verifyRefurbishedItemPage
+    flow: 
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.productNameTileGeneric
+                text:
+                  - identifier: us.mappings.item.productNameTileGeneric
+                    contains: Restored
+                  - identifier: us.mappings.item.productNameTileGeneric
+                    contains: Refurbished   
+          else:   
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.productNameTileGeneric
+                label:
+                  - identifier: us.mappings.item.productNameTileGeneric
+                    contains: Restored
+                  - identifier: us.mappings.item.productNameTileGeneric
+                    contains: Refurbished    
+      - verifyIdentifier:
+          timeout: 10000
+          present: 
+            - identifier: us.mappings.item.verifyRestoredLink 
+      - if:
+          condition: ${env} == 'production'
+          then:
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.verifyFreeReturns
+                  - name: direction
+                    string: down
+            - if:
+                condition: ${platform} == 'Android'
+                then:
+                  - executeFunction:
+                      name: unified.us.functions.utils.scrollIfNotVisible
+                      params:
+                        - name: identifier
+                          string: us.mappings.item.productAddToListButtonView #us.mappings.item.itemPagefulfillmentTitle
+                        - name: direction
+                          string: up  
+                        - name: scrollPosition
+                          string: center
+            - verifyIdentifier:
+                present: 
+                  - identifier: us.mappings.item.verifyFreeReturns                       
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.productDetails
+                  - name: direction
+                    string: down   
+            - if: 
+                identifier:
+                  present: 
+                    - identifier: us.mappings.item.productDescriptionViewCollapsed
+                then: 
+                  - click:
+                      identifier: us.mappings.item.productDescriptionViewCollapsed       
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.moreDetailsLink
+            - name: direction
+              string: up  
+            - name: scrollPosition
+              string: center
+      - click:
+          identifier: us.mappings.item.moreDetailsLink 
+      - sleep: 
+          duration: 3000
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.moreDetailsLink.SpecificationsText
+            - name: direction
+              string: down                              
+      - sleep: 
+          duration: 3000
+      - if:
+          identifier:
+            present:
+              - identifier: us.mapping.item.addWalmartProtectionPlan.closeButton 
+          then: 
+            - click:
+                identifier: us.mapping.item.addWalmartProtectionPlan.closeButton 
+          else:
+            - click:
+                identifier: us.mappings.item.cancelsubs.Back
+
+  - name: unified.us.functions.item.deepLink.checkItemAvailable
+    flow:
+      - storeIn:
+          key: failedItems
+          value: 'Items used : '
+      - loop:
+          each: ${itemArray}
+          storeElement: items
+          storeIndex: itemIndex
+          flow:
+              - executeFunction:
+                  name: unified.us.functions.global.navigation.goToDeepLink
+                  params:
+                    - name: deepLinkUrl
+                      string: walmart://item/$items
+              - sleep: 
+                  duration: 5000  
+              - if:
+                  identifier:
+                    present:
+                      - identifier: us.mappings.item.addToCartButton
+                  then:
+                    - log: "$items Item available"
+                    - break: true
+                  else:
+                    - log: $items Not Available.
+                    - storeIn:
+                        key: failedItems
+                        value: ${failedItems} , $items
+      - storeIn:
+          key: itemDataDetails
+          value: ${failedItems}
+
+
+  - name: unified.us.functions.item.acc.brandHeaderValidation
+    flow:
+      - sleep:
+          duration: 3000  
+      - verifyIdentifier:
+          present: 
+            - identifier: us.mappings.acc.tireBrandHeader
+      - log: Tire Brand Name Verified!
+      - verifyIdentifier:
+          present: 
+            - identifier: us.mappings.item.TireImage
+      - log: Tire Image is Verified!
+
+  - name: unified.us.function.item.verifyACCModule.DetailsLink 
+    flow:
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.item.ACCdetailsLink
+          scrollLimit: 2
+          position: center
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.ACCdetailsLink          
+      - click: 
+          identifier: us.mappings.item.ACCdetailsLink   
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.ACCdetailsPageHeading
+      - executeFunction: 
+          name: unified.us.functions.global.navigation.backNavigation
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.ACCdetailsLink 
+
+
+
+  - name: unified.us.function.item.verifyACCModule.verifyInstallation
+    flow:
+      - if:
+          condition: ${checkboxPresent}
+          then:
+            - if:
+                identifier:
+                  present:
+                    - identifier: us.mappings.item.getExpertTireInstallationCheckBox
+                then:
+                  - click:
+                      identifier: us.mappings.item.getExpertTireInstallationCheckBox
+                  - sleep: 
+                      duration: 5000
+
+                  - if:
+                      condition: ${platform} == 'Android'
+                      then:    
+                      - verifyIdentifier:
+                          checked:
+                            - identifier: us.mappings.item.getExpertTireInstallationCheckBox
+                              value: true
+                      - log: 'checkbox already selected'
+ 
+                  - if:
+                      condition: ${platform} == 'iOS'
+                      then:    
+                      - verifyIdentifier:
+                          value:
+                            - identifier: us.mappings.item.getExpertTireInstallationCheckBox
+                              equals: 1
+                      - log: 'checkbox already selected'
+
+                  - sleep: 
+                      duration: 5000
+                  - click:
+                      identifier: us.mappings.item.getExpertTireInstallationCheckBox
+                  - log: 'checkbox not selected'
+ 
+                else:
+                  - if:
+                      condition: ${platform} == 'Android'
+                      then: 
+                      - if:
+                          identifier:
+                            present:
+                              - identifier: us.mappings.associateDiscount.VerifyDiscountpolicyArrow
+                          then:                     
+                            - click:
+                                identifier: us.mappings.associateDiscount.VerifyDiscountpolicyArrow   
+                            - verifyIdentifier:
+                                timeout: 10000
+                                notPresent:
+                                  - identifier: us.mappings.item.idontNeedInstallationRadioButtonSelected
+                            - log: 'ACC Module collapsed'                     
+                            - sleep: 
+                                duration: 5000 
+                            - verifyIdentifier:
+                                present:             
+                                  - identifier: us.mappings.associateDiscount.VerifyDiscountpolicyArrow 
+                            - click:
+                                identifier: us.mappings.associateDiscount.VerifyDiscountpolicyArrow 
+                            - executeFunction:
+                                name: us.functions.utils.scrollIfNotVisible
+                                params:
+                                  - name: identifier
+                                    string: us.mappings.item.idontNeedInstallationRadioButtonSelected
+                                  - name: direction
+                                    string: down
+                            - verifyIdentifier:
+                                present:      
+                                  - identifier: us.mappings.item.idontNeedInstallationRadioButtonSelected     
+                            - log: ACC Module Expanded
+
+                  - if:
+                      condition: ${platform} == 'iOS'
+                      then:                   
+                        - if:
+                            identifier:
+                              notPresent:
+                                - identifier: us.mappings.item.idontNeedInstallationRadioButtonSelected
+                            then:
+                              - log:  ACC Module collapsed
+                              - verifyIdentifier:
+                                  present:
+                                    - identifier: us.mappings.item.AccModule.ExpandButton
+                              - click:
+                                  identifier: us.mappings.item.AccModule.ExpandButton
+                              - log:  ACC Module Expanded
+                            else:
+                              - log:  ACC Module Expanded
+                              - verifyIdentifier:
+                                  present:
+                                    - identifier: us.mappings.item.AccModule.CollapseButton
+                              - click:
+                                  identifier: us.mappings.item.AccModule.CollapseButton
+                              - log:  ACC Module collapsed
+                              - verifyIdentifier:
+                                  present:
+                                    - identifier: us.mappings.item.AccModule.ExpandButton
+                              - click:
+                                  identifier: us.mappings.item.AccModule.ExpandButton                  
+
+                  - verifyIdentifier:
+                      present:
+                        - identifier: us.mappings.item.tireInstallationRadioButtonNotSelected         
+                  - click:
+                      identifier: us.mappings.item.tireInstallationRadioButtonNotSelected
+                  - sleep: 
+                      duration: 5000 
+                  - verifyIdentifier:
+                      present:
+                        - identifier: us.mappings.item.tireInstallationRadioButtonSelected 
+
+                  - if:
+                      condition: ${platform} == 'Android'
+                      then:             
+                        - click:
+                            identifier: us.mappings.associateDiscount.VerifyDiscountpolicyArrow               
+                        - sleep: 
+                            duration: 5000 
+                        - verifyIdentifier:
+                            present:
+                              - identifier: us.mappings.item.tireInstallationTitle   
+                        - click:
+                            identifier: us.mappings.associateDiscount.VerifyDiscountpolicyArrow             
+                        - sleep: 
+                            duration: 5000 
+                        - verifyIdentifier:
+                            present:
+                              - identifier: us.mappings.item.tireInstallationRadioButtonSelected             
+                        - sleep: 
+                            duration: 5000 
+
+                  - if:
+                      condition: ${platform} == 'iOS'
+                      then: 
+                        - click:
+                            identifier:  us.mappings.item.AccModule.CollapseButton
+                        - sleep:
+                            duration: 5000
+                        - verifyIdentifier:
+                            present:
+                              - identifier: us.mappings.item.tireInstallationTitle
+                        - click:
+                            identifier:  us.mappings.item.AccModule.ExpandButton
+                        - sleep:
+                            duration: 5000
+                        - verifyIdentifier:
+                            present:
+                              - identifier: us.mappings.item.tireInstallationRadioButtonSelected
+                        - sleep:
+                            duration: 5000
+
+                  - verifyIdentifier:
+                      present:
+                        - identifier: us.mappings.item.idontNeedInstallationRadioButtonNotSelected            
+                  - click:
+                      identifier: us.mappings.item.idontNeedInstallationRadioButtonNotSelected            
+                  - sleep: 
+                      duration: 5000 
+                  - verifyIdentifier:
+                      present:
+                        - identifier: us.mappings.item.idontNeedInstallationRadioButtonSelected                     
+
+
+  - name: unified.function.item.acc.verifyACCLabels
+    flow:
+      - sleep: 
+          duration: 5000
+      - if: 
+          condition: ${itemType} == 's2s-tires'
+          then:
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.acc.item.s2sLabel
+          else:
+              - if:
+                  condition: ${itemType} == 'put-tires'
+                  then:
+                    - verifyIdentifier:
+                        present:
+                          - identifier: us.mappings.acc.item.putLabel       
+
+  - name: unified.us.function.item.mppickup.verifyPartnerBadge
+    flow:
+      - executeFunction:
+          name: us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.marketplacePickupLabel
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center 
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.marketplacePickupLabel
+
+  - name: unified.us.functions.item.marketplace.verifySellerType
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.switching.fulfillment.shippingText
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center 
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.switching.fulfillment.shippingText
+          then:
+            - click:
+                identifier: us.mappings.item.switching.fulfillment.shippingText           
+      - if: 
+          condition: ${sellerType} == 'pro-seller'
+          then:
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.sellerInfoProSeller
+            - log: "Verified pro-seller"
+          else:
+              - if:
+                  condition: ${sellerType} == '3p'
+                  then:
+                    - verifyIdentifier:
+                        present:
+                          - identifier: us.mappings.item.sellerInfo
+                    - log: "Verified 3p"
+                  else:
+                      - if:
+                          condition: ${sellerType} == 'pro-seller-wfs'
+                          then:
+                             - verifyIdentifier:
+                                present:
+                                  - identifier: us.mappings.item.3pFulfillmentText
+                                  - identifier: us.mappings.item.sellerInfoProSeller
+                             - log: "Verified pro-seller-wfs"
+                          else:
+                              - if:
+                                  condition: ${sellerType} == '3p-wfs'
+                                  then:
+                                    - verifyIdentifier:
+                                        present: 
+                                          - identifier: us.mappings.item.sellerInfo
+                                          - identifier: us.mappings.item.3pFulfillmentText
+                                    - log: "Verified 3p-wfs"
+
+  - name: unified.us.function.marketplace.contactSellerFromItemPage
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.viewSellerInfo
+            - name: direction
+              string: down 
+            - name: scrollPosition
+              string: center
+      - click:
+          identifier: us.mappings.item.viewSellerInfo
+          coordinates: 25%,50%               
+      - verifyIdentifier:
+          present: 
+            - identifier: us.mappings.item.sellerPage.detailsView.navigationBar
+            - identifier: us.mappings.item.ContactSellerButton
+      - click:
+          identifier: us.mappings.item.ContactSellerButton
+      - executeFunction:
+          name: unified.us.function.marketplace.verifySellerPageAndSendMesssage
+      - verifyIdentifier:
+          present: 
+            - identifier: us.mappings.item.sellerPage.detailsView.navigationBar
+            - identifier: us.mappings.item.ContactSellerButton
+      - click:
+          identifier: us.mappings.global.navigateBackArrow
+
+  - name: unified.us.function.marketplace.verifySellerPageAndSendMesssage
+    flow:
+      - verifyIdentifier:
+          present:      
+            - identifier: us.mappings.contactSellerTitle
+            - identifier: us.mappings.contactSellerSendMessageToText
+            - identifier: us.mappings.contactSellerReasonText
+            - identifier: us.mappings.contactSellerReasonForContactText
+      - enterText:
+          identifier: us.mappings.contactSellerMessageField
+          string: ${message}
+      - sleep:
+          duration: 2000
+      - hideKeyboard: true
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.default.keyboardDoneButton
+          then:
+            - click: 
+                identifier: us.mappings.default.keyboardDoneButton
+      - click:
+          wait: 2000
+          identifier: us.mappings.contactSellerSendButton
+      - if:
+          condition: ${platform} == 'Android'
+          then:  
+            - verifyIdentifier:
+                present: 
+                  - identifier: us.mappings.contactSellerConfirmationText
+                text:
+                  - identifier: us.mappings.contactSellerConfirmationText
+                    contains: Your message has been sent!
+          else:
+            - verifyIdentifier:
+                present: 
+                  - identifier: us.mappings.contactSellerConfirmationText
+                value:
+                  - identifier: us.mappings.contactSellerConfirmationText
+                    contains: Your message has been sent
+      - click:
+          identifier: us.mappings.contactSellerDoneButton
+
+  - name: unified.us.functions.item.verifyNotFitBannerMessage
+    flow:
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.verifyFitmentNotFitMessage
+          then:
+            - log: Fitment not fit message showing
+          else:
+            - executeFunction:
+                name: us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.verifyFitmentNotFitMessage
+                  - name: direction
+                    string: up
+                  - name: scrollPosition
+                    string: center
+      - if:
+          condition: ${platform} == 'iOS'
+          then:              
+            - verifyIdentifier:
+                label:
+                  - identifier: us.mappings.item.verifyFitmentNotFitMessage
+                    contains: Looks like this tire
+      - if:
+          condition: ${platform} == 'Android'
+          then:              
+            - verifyIdentifier:
+                text:
+                  - identifier: us.mappings.item.verifyFitmentNotFitMessage
+                    contains: Looks like this tire
+
+  - name: unified.us.functions.item.verifyFindTiresThatFit
+    flow:
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.verifyFindTiresThatFitButton
+          then:
+            - log: Find Tires that Fit button displayed
+          else:
+            - executeFunction:
+                name: us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.verifyFindTiresThatFitButton
+                  - name: direction
+                    string: down
+                  - name: scrollPosition
+                    string: center
+      - click:
+          identifier: us.mappings.item.verifyFindTiresThatFitButton
+      - sleep:
+          duration: 5000
+      - executeFunction:
+          name: us.functions.search.clickOnFirstItem 
+      - sleep:
+          duration: 2000
+      - executeFunction:
+         name: unified.us.functions.search.verifyFitmentSponseredFitsYourVehicle
+         
+         
+  - name: unified.us.functions.item.visionItem.verifyItemPage
+    flow:
+      - executeFunction:
+          name: us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.productNameTileGeneric
+            - name: direction
+              string: up
+      # - executeFunction:
+      #     name: us.functions.utils.scrollIfNotVisible
+      #     params:
+      #       - name: identifier
+      #         string: us.mappings.item.prescriptionAvailable 
+      #       - name: direction
+      #         string: down                       
+      # - verifyIdentifier:
+      #     present:
+      #       - identifier: us.mappings.item.prescriptionAvailable   
+      - log: Verifying Vision item page               
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.item.verifySeeHow   
+          position: center
+          scrollLimit: 1
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.verifySeeHow
+            - identifier: us.mappings.item.verifyMakeTheseFramesYourOwn
+            #- identifier: us.mappings.item.verifyCustomizeFrameDetails
+      - click:
+          identifier: us.mappings.item.verifySeeHow
+          coordinates: 5%,95%
+      - log: Verifying customize these frames content bottom sheet    
+      - verifyIdentifier:
+          timeout: 70000
+          present:
+            - identifier: us.mappings.item.arrivesWithinBusinessDays
+            - identifier: us.mappings.item.selectYourFrameAndLenses
+            - identifier: us.mappings.item.walmart+BottomTrayCloseButton
+            - identifier: us.mappings.item.framesSheetGotIt  
+      - click:
+          identifier: us.mappings.item.framesSheetGotIt
+      - if:
+          condition: ${SecondSunGlasses} == true     
+          then:                                        
+          - executeFunction:
+              name: us.functions.utils.scrollIfNotVisible
+              params:
+                - name: identifier
+                  string: us.mappings.item.thirtyFivePercentPromo
+                - name: direction
+                  string: down   
+                - name: scrollPosition
+                  string: center     
+          - verifyIdentifier:
+              present:
+                - identifier: us.mappings.item.thirtyFivePercentPromo
+          else:
+            - if:
+                identifier:
+                  present:
+                    - identifier: us.mappings.item.twentyPercentPromo
+                then:
+                  - executeFunction:
+                      name: us.functions.utils.scrollIfNotVisible
+                      params:
+                        - name: identifier
+                          string: us.mappings.item.twentyPercentPromo
+                        - name: direction
+                          string: down   
+                        - name: scrollPosition
+                          string: center     
+                  - verifyIdentifier:
+                      present:
+                        - identifier: us.mappings.item.twentyPercentPromo  
+                  - click:
+                      identifier: us.mappings.visionItem.PercentPromoT&CLink
+                      wait: 2000
+                  - log: Verifying percent promo bottom sheet                
+                  - verifyIdentifier:
+                      present:
+                        - identifier: us.mappings.visionItem.PercentPromoBottomsheetTitle
+                        - identifier: us.mappings.visionItem.PercentPromoBottomsheetGotIt
+                        # - identifier: us.mappings.visionItem.PercentPromoBottomsheetBackBtn
+                        - identifier: us.mappings.item.walmart+BottomTrayCloseButton                   
+                  - click:
+                      identifier: us.mappings.visionItem.PercentPromoBottomsheetGotIt    
+                else:
+                  - log: 20% Promo is not visible 
+
+
+  - name: unified.us.functions.item.simpleAddItemToCartWithDeepLink
+    flow:
+      - executeFunction:
+          name: unified.us.functions.global.navigation.goToDeepLink
+          params:
+            - name: deepLinkUrl
+              string: ${deepLinkUrl}
+      - verifyIdentifier:
+          timeout: 80000
+          present:
+            - identifier: us.mappings.item.addToCartButton
+      - click:
+          identifier: us.mappings.item.addToCartButton
+      # Added sleep for Post ATC pop up to show before closing.
+      - sleep:
+          duration: 3000
+      - executeFunction:
+          name: unified.us.functions.global.navigation.goToDeepLink
+          params:
+            - name: deepLinkUrl
+              string: walmart://home
+
+  - name: unified.us.functions.item.visionItem.workAroundForGalleryPermissionIos
+    flow:
+      - if:
+          condition: ${platform} == 'iOS'
+          then:
+            - terminateApp: true
+            - openLink: walmart://debugPanel
+            - scroll:
+                direction: down
+                untilIdentifier: us.mappings.debugPanel.permissionPrompts
+                position: center
+            - click:
+                identifier: us.mappings.debugPanel.permissionPrompts
+            - click:
+                identifier: us.mappings.debugPanel.photosPermissions
+            - click:
+                identifier: us.mappings.item.addPrescription.accessPhotos.continue
+                wait: 3000
+            - click:
+                identifier: us.mappings.item.addPrescription.accessPhotos.continue
+                wait: 5000
+            - click:
+                identifier: us.mappings.debugPanel.photos
+            - click:
+                identifier: us.mappings.debugPanel.photosAccess
+            - click:
+                identifier: us.mappings.visionItem.selectImage 
+            - click:
+                identifier: Done
+            - openLink: walmart://home
+            - if:
+                identifier:
+                  present:
+                    - identifier: us.mappings.debugPanel.photosPermissions
+                then:
+                  - goBack: true
+                  - click:
+                      identifier: Done
+                      wait: 5000
+
+  - name: unified.us.functions.item.visionItem.verifySelectLenses
+    flow:
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.verifySelectLensesCTA
+      - click:
+          identifier: us.mappings.item.verifySelectLensesCTA
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.verifySelectYourLensesTitle
+            - identifier: us.mappings.item.verifySingleVisionLense
+            - identifier: us.mappings.item.verifyWhat'sYourPrescriptionType
+      - click:
+          identifier: us.mappings.item.verifySingleVisionLense
+      - click:
+          identifier: us.mappings.item.continue
+      - sleep:
+          duration: 2000  
+      - if:
+          condition: ${itemType} == 'Eyeglasses'       
+          then:
+            - log: Selecting Lense   
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.verifyWhatTypesOfLesesYouNeed   
+                  - identifier: us.mappings.item.verifyClearOption       
+                  - identifier: us.mappings.item.verifySunGlassesOption
+                # - identifier: us.mappings.item.verifyLightReactiveOption
+                #  - identifier: us.mappings.item.selectLensBackButton                
+                  - identifier: us.mappings.item.continue
+                  - identifier: us.mappings.item.selectLensCloseButton            
+            - if:
+                condition: ${lensetype} == 'Lense A'
+                then:
+                  - log: Selecting 'Clear' option
+                  - click: 
+                     identifier: us.mappings.item.verifyClearOption
+                     coordinates: 50%, 50%
+                else:
+                  - if:
+                      condition: ${lensetype} == 'Lense B'
+                      then:
+                        - log: Selecting 'Sunglasses' option
+                        - click:
+                            identifier: us.mappings.item.verifySunGlassesOption   
+                      else:
+                        - if:
+                            condition: ${lensetype} == 'Lense C'
+                            then:
+                              - log: Selecting 'Light Reactive' option
+                              - click:
+                                  identifier: us.mappings.item.verifyLightReactiveOption                       
+            - click: 
+               wait: 5000
+               identifier: us.mappings.item.continue
+               coordinates: 50%, 50%
+      - if:
+          condition: ${itemType} == 'Sunglasses'       
+          then:
+            - log: Skipping lenseType selection for sunglasses
+            - if:
+                identifier:
+                  present:
+                    - identifier: us.mappings.item.verifySunGlassesOption
+                then:
+                  - click:
+                      identifier: us.mappings.item.verifySunGlassesOption
+                  - click:
+                      identifier: us.mappings.item.continue
+      - sleep:
+          duration: 2000           
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.lenseMaterial
+            - identifier: us.mappings.item.standard
+            # - identifier: us.mappings.item.polyCarbonate
+            # - identifier: us.mappings.item.hiIndex
+      - if:
+          condition: ${LenseMaterial} == 'PolyCarbonate'
+          then:
+            - log: Selecting 'PolyCarbonate' option
+            - click:          
+                identifier: us.mappings.item.polyCarbonate
+          else:
+            - if:
+                condition: ${LenseMaterial} == 'Standard'
+                then:
+                  - log: Selecting 'Standard' option
+                  - click:          
+                      identifier: us.mappings.item.standard
+                else:
+                  - if:
+                      condition: ${LenseMaterial} == 'HiIndex'
+                      then:
+                        - log: Selecting 'HiIndex' option
+                        - click:          
+                            identifier: us.mappings.item.hiIndex 
+      - click:
+          identifier: us.mappings.item.continue
+      - sleep:
+          duration: 2000           
+      - if:
+          condition: ${LenseColor} == 'Copper'
+          then:
+            - log: Selecting 'Copper' color
+            - click:          
+                identifier: us.mappings.item.color.copper
+          else:
+            - if:
+                condition: ${LenseColor} == 'grey'
+                then:
+                  - log: Selecting 'Grey' color
+                  - click:          
+                      identifier: us.mappings.item.color.grey
+                  - click:
+                      identifier: us.mappings.item.continue
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.color.title
+          then:
+            - click:
+                wait: 5000
+                identifier: us.mappings.item.continue 
+      - if: 
+          condition: ${option} == 'StandardPolycarbonate'
+          then: 
+            - log: Selecting  "standard polycarbonate"
+            - click:          
+                identifier: us.mappings.item.standardPolycarbonate.title
+            - click:
+                identifier: us.mappings.item.continue
+          else:
+            - if: 
+                condition: ${option} == 'PremiumPolycarbonate'
+                then: 
+                  - log: Selecting  "premium polycarbonate"
+                  - click:          
+                      identifier: us.mappings.item.premiumPolycarbonate.title
+                  - click:
+                      identifier: us.mappings.item.continue
+      - sleep:
+          duration: 2000            
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.anythingToAdd
+            - identifier: us.mappings.item.noAddOn
+            # - identifier: us.mappings.item.antiReflective
+            # - identifier: us.mappings.item.withBlueLightFilter
+      - if:
+          condition: ${add-ons} == 'No add-ons'
+          then:
+            - log: Selecting 'No add-ons'
+            - click:          
+                identifier: us.mappings.item.noAddOn
+          else:
+            - if:
+                condition: ${add-ons} == 'Backside anti-reflective'
+                then:
+                  - log: Selecting 'Backside anti-reflective'
+                  - click:          
+                      identifier: us.mappings.item.antiReflective
+                else:
+                  - if:
+                      condition: ${add-ons} == 'BlueLightFilter'
+                      then:
+                        - log: Selecting 'BlueLightFilter '
+                        - click:          
+                            identifier: us.mappings.item.withBlueLightFilter                
+      - click:
+          identifier: us.mappings.item.continue
+          coordinates: 50%, 50%
+      - sleep:
+          duration: 2000           
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.reviewYourSelection
+            - identifier: us.mappings.item.verifyFramesText
+            - identifier: us.mappings.item.verifyLensesText
+            - identifier: us.mappings.item.verifySubTotalTitle
+            # - identifier: us.mappings.item.verifyAddPrescriptionCTA
+            # - identifier: us.mappings.item.review.addToCartButton
+
+ # Verify Pickup from nearby Store text available and select pick up fulfillment
+  - name : unified.us.functions.item.pickup.nearby.store
+    flow:
+      - executeFunction:
+            name: unified.us.functions.utils.scrollIfNotVisible
+            params:
+              - name: identifier
+                string: us.mappings.item.selectPickup.fulfillment
+              - name: direction
+                string: down
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.selectPickup.fulfillment
+      - if: 
+          condition: ${selectfulfillment} == 'pickup'
+          then:
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.selectPickup.fulfillment
+            - click:
+                identifier: us.mappings.item.selectPickup.fulfillment
+                wait: 3000
+
+# Select Out of Stock Store and Select back again In Stock store
+  - name : unified.us.functions.item.verifyOutOfStockStoreAndSelectInStock
+    flow:
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - executeFunction:
+                  name: unified.us.functions.utils.scrollIfNotVisible
+                  params:
+                    - name: identifier
+                      string:  us.mappings.item.fulfillmentContainerView
+                    - name: direction
+                      string: down
+                    - name: scrollPosition
+                      string: center
+            - click:
+                identifier: us.mappings.item.pickupNotAvailable
+      - if:
+          condition: ${platform} == 'iOS'
+          then:
+            - executeFunction:
+                  name: unified.us.functions.utils.scrollIfNotVisible
+                  params:
+                    - name: identifier
+                      string:  us.mappings.item.outOfStockForPickupInStore.txt
+                    - name: direction
+                      string: down
+                    - name: scrollPosition
+                      string: center
+      - try:
+          flow: 
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.outOfStockForPickupInStore.txt
+                  - identifier: us.mappings.item.checkAvailableForPickUpNearBy.btn
+          catch:
+            flow:
+              - failTest:
+                  message: "FAILURE - ${env} - CEPG-282792 Changing store from item page is not getting reflected after saving"
+      - click:
+          identifier: us.mappings.item.checkAvailableForPickUpNearBy.btn   
+      - executeFunction:
+            name: unified.us.functions.utils.scrollIfNotVisible
+            params:
+              - name: identifier
+                string:  us.mappings.item.selectAvailableStore.radioBtn
+              - name: direction
+                string: down
+              - name: scrollPosition
+                string: center
+      - verifyIdentifier:
+          timeout: 50000
+          present:
+            - identifier: us.mappings.item.selectAvailableStore.radioBtn
+      - click:
+          identifier: us.mappings.item.selectAvailableStore.radioBtn
+      - if: 
+          condition: ${platform} == 'Android'
+          then:
+            - if:
+                identifier:
+                  present:
+                    - identifier: us.mappings.tipping.custom.numpad.doneButton
+                then:
+                  - click:
+                      identifier: us.mappings.tipping.custom.numpad.doneButton
+                      coordinates: 50%, 50%
+      - click: 
+          identifier: us.mappings.gic.selectStore.save.button
+          wait: 3000
+      - executeFunction:
+          name: unified.us.functions.utils.handleTechnicalErrorPopup             
+      - log: Selected the Store which items are in stock
+
+      - if: 
+          condition: ${platform} == 'Android'
+          then:
+            - scroll:
+                direction: down
+                untilIdentifier: us.mappings.item.fulfillmentContainerView
+                scrollLimit: 3
+
+  - name: unified.us.functions.item.validateZeekitChooseMyModelScreen
+    flow:
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.global.chooseSize
+          then:
+            - click:
+                identifier: us.mappings.global.chooseSize
+      - click:
+          identifier: us.mappings.item.zeekit.chooseMyModelSeeModelsButton
+      - sleep:
+          duration: 10000   
+
+  - name: unified.us.functions.item.validateZeekitModelUpdateScreen
+    flow:
+      - verifyIdentifier:
+          timeout: 40000
+          present:
+              - identifier: us.mappings.item.zeekit.chooseMyModelUpdateChooseModelButton
+      - click: 
+          identifier: us.mappings.item.zeekit.chooseMyModelUpdateChooseModelButton
+
+  - name: unified.us.functions.item.validateZeekitEditModel
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params: 
+            - name: identifier
+              string: us.mappings.item.zeekit.chooseModelFirstLabelButtonText
+            - name: direction
+              string: down    
+      - verifyIdentifier:
+          present:
+              - identifier: us.mappings.item.zeekit.chooseModelFirstLabelButtonText
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params: 
+            - name: identifier
+              string: us.mappings.item.zeekit.chooseMyModelUpdateValidation
+            - name: direction
+              string: down              
+      - verifyIdentifier:
+          present:        
+              - identifier: us.mappings.item.zeekit.chooseMyModelUpdateValidation
+
+  - name: unified.us.functions.item.validateZeekitResetModel
+    flow:
+      - sleep:
+          duration: 5000  
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params: 
+            - name: identifier
+              string: us.mappings.item.zeekit.EditModelText
+            - name: direction
+              string: up          
+      - verifyIdentifier:
+          present:
+              - identifier: us.mappings.item.zeekit.EditModelText
+      - click: 
+          identifier: us.mappings.item.zeekit.EditModelText  
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.zeekit.switchModelText
+          then:
+            - click:
+                identifier: us.mappings.item.zeekit.switchModelText
+      - sleep:
+          duration: 10000                   
+      - verifyIdentifier:
+          present:
+              - identifier: us.mappings.item.zeekit.resetToOriginalModel
+      - click: 
+          identifier:  us.mappings.item.zeekit.resetToOriginalModel   
+      - sleep:
+          duration: 3000                  
+      - click:
+          identifier: us.mappings.item.zeekit.resetModelConfirmButton
+      - sleep:
+          duration: 3000  
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.zeekit.chooseModelFirstText
+            - name: direction
+              string: down   
+      - verifyIdentifier:
+          present:
+              - identifier: us.mappings.item.zeekit.chooseModelFirstText    
+
+  - name: unified.us.functions.item.validateZeekit
+    flow:
+      - sleep:
+          duration: 10000
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.zeekit.chooseModelFirstLabelButtonText
+            - name: direction
+              string: down
+      - verifyIdentifier:
+          present:
+              - identifier: us.mappings.item.zeekit.chooseModelFirstLabelButtonText
+
+      - if:
+          identifier:
+            notPresent:
+              - identifier: us.mappings.item.zeekit.chooseModelSecondText    
+          then:    
+            - scroll:
+                direction: down
+                untilIdentifier: us.mappings.item.zeekit.chooseModelSecondText
+            - scroll:
+                direction: up
+                untilIdentifier: us.mappings.item.zeekit.chooseModelFirstLabelButtonText
+          else:
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.zeekit.chooseModelSecondText
+      - click: 
+          identifier: us.mappings.item.zeekit.chooseModelFirstLabelButtonText
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.zeekit.switchModelViewTab
+          then:
+            - click:
+                identifier: us.mappings.item.zeekit.switchModelViewTab        
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.zeekit.chooseModelSeeStylesInMoreSizesText
+            - identifier: us.mappings.item.zeekit.chooseModelSeeStylesDescription
+
+  - name: unified.us.functions.item.gift.verifyGiftItem
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.gifting.itempage.giftbadge
+            - name: direction
+              string: down
+      - verifyIdentifier:
+            present:
+              - identifier: us.mappings.gifting.itempage.giftbadge
+
+  - name: unified.us.functions.item.verifyNonConfigItem.bundleDetails
+    flow: 
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.item.nonConfigItemBundleTitle
+          position: center   
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - verifyIdentifier:
+                text:
+                  - identifier: us.mappings.item.nonConfigItemBundleTitle
+                    contains: This bundle includes
+          else: 
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.nonConfigItemBundleTitle
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.nonConfigItemBundleoptions
+
+  - name: unified.us.functions.item.selectItemVariants
+    flow:
+      - sleep:
+          duration: 5000
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.item.variant.firstContainerVariant
+          scrollLimit: 1
+          position: center
+      - if:
+          condition: ${platform} == 'Android'
+          then:
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.variant.firstContainerVariant
+            - click:
+                identifier: us.mappings.item.variant.firstContainerVariant
+      - loop:
+          begin: 2
+          end: 3
+          mode: increment
+          storeIndex: index
+          flow:
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.variant.secondContainerVariant
+                  - name: direction
+                    string: right
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.variant.secondContainerVariant
+            - click:
+                identifier: us.mappings.item.variant.secondContainerVariant
+            - sleep:
+                duration: 2000      
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.variant.firstContainerVariant
+                  - name: direction
+                    string: up
+                  - name: scrollPosition
+                    string: center     
+      - if:
+          condition: ${platform} == 'iOS'
+          then:                    
+            - getString:
+                identifier: us.mappings.item.variant.singleVariantOptionsText
+                attribute: label
+                storeIn: itemPageVariant
+            - try:
+                flow: 
+                  - verifyIdentifier:
+                      label:
+                        - identifier: us.mappings.item.variant.singleVariantOptionsText
+                          contains: select
+                  - executeNode:
+                      file: us/e2e-tests/helpers/splitString.js
+                      args:
+                        - value: ${itemPageVariant}
+                        - value: select Actual
+                      getResponse:
+                        storeIn: itemPageVariant
+                  - log: $itemPageVariant    
+                catch:
+                  flow:
+                    - log: $itemPageVariant  
+          else:
+            - getString:
+                identifier: us.mappings.item.variant.selectedVariantTitle
+                attribute: text
+                storeIn: itemPageVariant
+            - log: $itemPageVariant
+
+  - name: unified.us.functions.item.selectVariants.verifySizeChart
+    flow:
+      - sleep:
+          duration: 5000
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.item.vision.sizeGuide
+          position: center
+      - click:
+          identifier: us.mappings.item.vision.sizeGuide
+      # - if:
+      #     identifier:
+      #       present:
+      #         - identifier: us.mappings.item.vision.sizeGuideBottomSheet
+      #     then:
+      #       - click:
+      #           identifier: us.mappings.item.vision.sizeGuideBottomSheet                        
+      # - if:
+      #     identifier:
+      #       present:
+      #         - identifier: us.mappings.ios.DoneButton
+      #     then:
+      #       - click: 
+      #           wait: 2000
+      #           identifier: us.mappings.ios.DoneButton
+      - if:
+          condition: ${platform} == 'Android'
+          then:  
+            - verifyIdentifier:
+                present: 
+                  - identifier: us.mappings.item.vision.sizeGuideTableView
+          else: 
+            - verifyIdentifier:
+                timeout: 60000
+                present: 
+                  - identifier: us.mappings.item.vision.sizeGuideBottomSheet
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.item.measuringGuideViewImage
+      - verifyIdentifier:
+          present: 
+            - identifier: us.mappings.item.measuringGuideViewImage              
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.vision.sizeGuide.backButton
+          then:
+            - click:
+                identifier: us.mappings.item.vision.sizeGuide.backButton
+      - scroll:
+          direction: up
+
+  - name: unified.us.functions.cart.verifyVariantDetails
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.cart.fulfillmentSection.sizeVariantDetails
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center
+      - verifyIdentifier:
+          present:             
+            - identifier: us.mappings.cart.fulfillmentSection.sizeVariantDetails
+            - identifier: us.mappings.cart.fulfillmentSection.colorVariantDetails
+      - log: Validated Size $itemSize and Color $Color in cart page are same from item page
+      - if: 
+          condition: ${Variant} == 3
+          then: 
+              - log: $wid
+              - if: 
+                  condition: ${wid} == 'Medium' || ${wid} == 'Medium '
+                  then:
+                    - storeIn:
+                        key: width
+                        value: M
+                    - verifyIdentifier:
+                        present:
+                          - identifier: us.mappings.cart.fulfillmentSection.widthVariantDetails
+
+                  else:
+                      - if:
+                          condition: ${wid} == 'Extra Wide' || ${wid} == 'Extra Wide '
+                          then:
+                            - storeIn:
+                                key: width
+                                value: EW
+                            - verifyIdentifier:
+                                present:
+                                  - identifier: us.mappings.cart.fulfillmentSection.widthVariantDetails            
+
+  - name: unified.us.functions.item.selectVariants
+    flow:
+      - sleep:
+          duration: 5000
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.item.variant.colour
+          scrollLimit: 1
+          position: center
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.variant.colour
+      - click:
+          identifier: us.mappings.item.variant.colour
+      - sleep:
+          duration: 5000
+      - if:
+          condition: ${platform} == 'iOS'
+          then: 
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.variant.colour
+                  - name: direction
+                    string: up
+                  - name: limit
+            - getString:
+                identifier: us.mappings.item.variant.colour
+                attribute: label
+                storeIn: itemColour
+            - log: $itemColour
+            - executeNode:
+                file: us/e2e-tests/helpers/splitVariantString.js
+                args:
+                  - value: ${itemColour}
+                  - value: ' '
+                getResponse:
+                  storeIn: color
+            - log: $Color
+          else: 
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.variant.selectedVariantTitle
+                  - name: direction
+                    string: down
+                  - name: scrollPosition
+                    string: center
+            - getString:
+                identifier: us.mappings.item.variant.selectedVariantTitle
+                attribute: text
+                storeIn: itemColour
+            - log: $itemColour
+      - if:
+          condition: ${platform} == 'Android'
+          then: 
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.itemPage.secondVariantsContainer 
+                  - name: direction
+                    string: down
+                  - name: scrollPosition
+                    string: center          
+            - scroll:
+                direction: right
+                untilIdentifier: us.mappings.item.variant.size    
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.variant.size
+      - click:
+          identifier: us.mappings.item.variant.size         
+      - sleep:
+          duration: 5000
+      - if:
+          condition: ${platform} == 'iOS'
+          then:  
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.variant.size
+                  - name: direction
+                    string: up
+                  - name: limit
+                    string: 10
+            - getString:
+                identifier: us.mappings.item.variant.size
+                attribute: label
+                storeIn: itemSize
+            - log: $itemSize                    
+            - if: 
+                condition: ${Variant} == 3
+                then:      
+                    - verifyIdentifier:
+                        present:
+                          - identifier: us.mappings.item.variant.width
+                    - click:
+                        identifier: us.mappings.item.variant.width
+                    - sleep:
+                        duration: 2000
+                    - executeFunction:
+                        name: unified.us.functions.utils.scrollIfNotVisible
+                        params:
+                          - name: identifier
+                            string: us.mappings.item.variant.width
+                          - name: direction
+                            string: up
+                          - name: limit
+                            string: 10
+                    - getString:
+                        identifier: us.mappings.item.variant.width
+                        attribute: label
+                        storeIn: itemWidth
+                    - log: $itemWidth
+                    - executeNode:
+                        file: us/e2e-tests/helpers/splitVariantString.js
+                        args:
+                          - value: ${itemWidth}
+                          - value: '\n'
+                        getResponse:
+                          storeIn: wid
+                    - log: $wid
+          else: 
+            - getString:
+                identifier: us.mappings.item.variant.selectedVariantSizeTitle
+                attribute: text
+                storeIn: itemSize
+            - log: $itemSize
+            - sleep:
+                duration: 5000
+            - if:
+                identifier:
+                  present:
+                    - identifier: us.mappings.item.variant.width
+                then:      
+                  - verifyIdentifier:
+                      present:
+                        - identifier: us.mappings.item.variant.width
+                  - click:
+                      identifier: us.mappings.item.variant.width
+                  - sleep:
+                      duration: 5000
+                  - getString:
+                      identifier: us.mappings.item.variant.width
+                      attribute: text
+                      storeIn: itemWidth
+                  - log: $itemWidth
+                  - sleep:
+                      duration: 5000  
+
+  - name: unified.us.functions.cart.verifySingleVariantDetails
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.cart.singleItemvariant
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center
+      - if:
+          condition: ${platform} == 'Android'
+          then:    
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.cart.itemPresent.itemNameLabel
+            - getString:
+                identifier: us.mappings.cart.singleItemvariant
+                attribute: text
+                storeIn: cartSingleVariant
+            - verifyIdentifier:
+                text:
+                  - identifier: us.mappings.cart.singleItemvariant
+                    contains: ${itemPageVariant}
+          else: 
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.cart.singleItemvariant
+            - getString:
+                identifier: us.mappings.cart.singleItemvariant
+                attribute: label
+                storeIn: cartSingleVariant
+            - verifyIdentifier:
+                label:
+                  - identifier: us.mappings.cart.singleItemvariant
+                    contains: ${itemPageVariant}
+            - log: Variant selected in item page is displayed in cart  
+       
+  - name: unified.us.functions.item.sunglasses.nonprescriptionFlow
+    flow:
+      - scroll:
+          untilIdentifier: us.mappings.visionItem.nonPrescriptionRadioBtn
+          direction: down
+          position: center
+      - log: Selecting non-prescription radio button
+      - click:
+          identifier: us.mappings.visionItem.nonPrescriptionRadioBtn  
+      - if:
+          condition: ${skip} == true
+          then:
+            - log: Skipping for faster execution
+          else:
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.verifySeeHow
+                  - name: direction
+                    string: up   
+                  - name: scrollPosition
+                    string: center 
+            - click:
+                identifier: us.mappings.item.verifySeeHow
+                coordinates: 95%,95%
+            - log: Verifying customize these frames content bottom sheet    
+            - verifyIdentifier:
+                timeout: 70000
+                present:
+                  - identifier: us.mappings.item.arrivesWithinBusinessDays
+                  - identifier: us.mappings.item.selectYourFrameAndLenses
+                  - identifier: us.mappings.item.lensCustomizationBottomTrayCloseButton
+                  - identifier: us.mappings.item.framesSheetGotIt  
+            - click:
+                identifier: us.mappings.item.framesSheetGotIt                
+            - scroll:
+                untilIdentifier: us.mappings.item.free90daysReturns
+                direction: down
+                position: center
+                scrollLimit: 5
+            - if:
+                identifier:
+                  present:
+                    - identifier: us.mappings.item.free90daysReturns
+                then:
+                  - log: "Return policy is displayed"
+                else:
+                  - log: "Return policy is not displayed"                 
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.addToCartButton 
+      - log: Customize lenses flow is not displayed as the item is non-prescription item     
+
+  - name: unified.us.functions.item.sunglasses.prescriptionFlow
+    flow:
+      - scroll:
+          untilIdentifier: us.mappings.visionItem.prescriptionRadioBtn
+          direction: down
+          position: center
+      - log: Selecting prescription radio button
+      - click:
+          identifier: us.mappings.visionItem.prescriptionRadioBtn                        
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.verifySelectLensesCTA 
+      - log: Customize lenses flow is displayed                            
+
+
+# function to verify bought before 
+  - name: unified.us.functions.item.boughtBefore.verifyPresent
+    flow:
+      - if: 
+          condition: ${platform} == 'ios'
+          then:
+            - if:
+                identifier:
+                  present:
+                    - identifier: us.mappings.item.broughtBefore.label
+                then:
+                  - log: "Bought before item present"
+                else:
+                  - failTest:
+                      message: "DATA_FAILURE - Bought before item not present"
+            - verifyIdentifier:
+                present: 
+                  - identifier: us.mappings.item.broughtBefore.date
+      - if: 
+          condition: ${platform} == 'Android'
+          then:
+            - verifyIdentifier:
+                present: 
+                  - identifier: us.mappings.item.broughtBefore.label
+            - verifyIdentifier:
+                present: 
+                  - identifier: us.mappings.item.broughtBefore.date  
+
+  - name: unified.us.functions.item.localMarketPlace.itemPageValidations
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.localmarketPlace.deliveryTilewithSLA
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center
+            - name: scrollLimit
+              string: 1
+
+      - if: 
+          condition: ${fulfillment} == 'Delivery'
+          then:
+            - click:
+                identifier: us.mappings.item.localmarketPlace.delivery
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.localmarketPlace.deliveryTilewithSLA
+                  - name: direction
+                    string: up
+                  - name: scrollPosition
+                    string: center
+            - if: 
+                condition: ${Spark} == true
+                then:     
+                  - verifyIdentifier:
+                      present:
+                        - identifier: us.mappings.item.localmarketPlace.deliveryTilewithSLA
+                        - identifier: us.mappings.item.localmarketPlace.fulfilledByWalmart
+                        - identifier: us.mappings.item.localmarketPlace.deliveryCharges
+                        - identifier: us.mappings.item.localmarketPlace.addressSelector
+                        - identifier: us.mappings.item.localmarketPlace.w+signUpModule
+                  - getString:
+                        identifier: us.mappings.item.localmarketPlace.deliveryTilewithSLA
+                        attribute: label
+                        storeIn: deliveryDayTimePDP
+                  - log: ${deliveryDayTimePDP}
+                  - executeNode:
+                      file: us/e2e-tests/helpers/getDeliverySLAItemPage.js
+                      args:
+                        - value: ${deliveryDayTimePDP}
+                      getResponse:
+                        storeIn: deliverySLAinPDP
+                  - log: "Delivey day and time is stored in a variable - ${deliverySLAinPDP}"
+                  - log: ${deliverySLA}
+                  - if: 
+                      condition: ${deliverySLAinPDP} != ${deliverySLA}
+                      then:
+                        - log: "Delivery day and time is not same as expected on Item page"
+                      else:
+                        - log: "Delivery day and time is same as expected on Item page"          
+                  - storeIn:
+                      key: Spark
+                      value: false    
+            - if:
+                condition: ${BYOD} == true
+                then:
+                  - verifyIdentifier:
+                      present:
+                        - identifier: us.mappings.item.localmarketPlace.fulfilledByBYODSeller
+                        - identifier: us.mappings.item.localmarketPlace.BYODDeliveryCharges
+                        - identifier: us.mappings.item.localmarketPlace.BYODSpecialRequest
+                        - identifier: us.mappings.item.localmarketPlace.BYODDeliveryTilewithSLA
+                  - verifyIdentifier:
+                     notPresent:
+                       - identifier: us.mappings.item.localmarketPlace.w+signUpModule
+                  - storeIn:
+                      key: BYOD
+                      value: false   
+            - click:
+                identifier: us.mappings.item.localmarketPlace.addressSelector
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.localmarketPlace.address
+            - click:
+                identifier: us.mappings.item.localmarketPlace.addressClose
+      - if: 
+          condition: ${fulfillment} == 'Pickup'
+          then:
+            - click:
+                identifier: us.mappings.item.localmarketPlace.pickup     
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.localmarketPlace.pickupTilewithSLA
+                  - identifier: us.mappings.item.localmarketPlace.pickupAtStore
+                  - identifier: us.mappings.item.localmarketPlace.pickupAddress
+                  # - identifier: us.mappings.item.localmarketPlace.pickupStoreChangeButton
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.localmarketPlace.soldLocallyBy
+            - identifier: us.mappings.item.localmarketPlace.returnPolicy
+
+  - name: unified.us.functions.item.majorAppliance.itemPage
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.sellerAndRxoInfo
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.sellerAndRxoInfo
+            - identifier: us.mappings.item.deliveryAndSetupOptionsModule        
+
+
+  - name: unified.us.functions.item.majorAppliance.deliveryoptions
+    flow:
+      - verifyIdentifier:
+          timeout: 50000
+          present:
+            - identifier: us.mappings.item.deliveryOptions
+            - identifier: us.mappings.item.AddedToCartMessage
+            - identifier: us.mappings.item.deliveryOptionsItemContinueButton
+      - scroll:
+         direction: down
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.RXOacknolwdegementMessage
+      - if:
+          condition: ${DeliveryAndInstallation} == true
+          then:
+              - click:
+                  identifier: us.mappings.item.deliveryAndInsatllationRadioButton
+
+      - if:
+          condition: ${RoomOfChoice} == true
+          then:
+              - click:
+                  identifier: us.mappings.item.RoomOfChoiceRadioButton
+
+      - if:
+          condition: ${DoorStepDelivery} == true
+          then:
+              - click:
+                  identifier: us.mappings.item.DoorStepDeliveryRadioButton
+
+      - if:
+          condition: ${HaulAway} == true
+          then:
+              - click:
+                  identifier: us.mappings.item.HaulAwayCheckBox
+
+      - click:
+          identifier: us.mappings.item.deliveryOptionsItemContinueButton   
+
+
+  - name : unified.us.functions.item.changeStore
+    flow:
+      - executeFunction:
+            name: unified.us.functions.utils.scrollIfNotVisible
+            params:
+              - name: identifier
+                string: us.mappings.pause.clickOnChangeButton
+              - name: direction
+                string: down
+              - name: scrollPosition
+                string: center
+      - click:
+          identifier: us.mappings.item.selectPickup.fulfillment
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.item.fulfillmentContainerView
+          then:  
+              - storeIn:
+                  key: fulfillmentContainerView
+                  value: true
+              - log: Fullfilments are in container
+              - verifyIdentifier:
+                  present:
+                    - identifier: us.mappings.pause.clickOnChangeButton
+              - click:    
+                  identifier: us.mappings.pause.clickOnChangeButton
+              - if: 
+                  condition: ${platform} == 'Android'
+                  then:
+                    - if:
+                        identifier:
+                          present:
+                            - identifier: us.mappings.tipping.custom.numpad.doneButton
+                        then:
+                          - click:
+                              identifier: us.mappings.tipping.custom.numpad.doneButton
+              - executeFunction:
+                  name: unified.us.functions.utils.scrollIfNotVisible
+                  params:
+                    - name: identifier
+                      string: us.mappings.home.selectNeighborhoodMarketRadioButton
+                    - name: direction
+                      string: down
+              - click: 
+                  identifier: us.mappings.home.selectNeighborhoodMarketRadioButton
+              - click: 
+                  identifier: us.mappings.gic.selectStore.save.button
+                  wait: 1000
+              - log: Selected the Neighborhood Market Store
+
+# Remove item from favorites from Item details page
+  - name : unified.us.functions.item.removefromFavorites
+    flow:
+      - if: 
+          condition: ${platform} == 'ios'
+          then:    
+              - verifyIdentifier:
+                 label:
+                   - identifier: us.mappings.item.heartIcon
+                     contains: Remove from favorites
+              - click:
+                 identifier: us.mappings.item.heartIcon
+              - verifyIdentifier:
+                  label:
+                    - identifier: us.mappings.item.heartIcon
+                      contains: Add to favorites
+      - if: 
+          condition: ${platform} == 'Android'
+          then:    
+              - verifyIdentifier:
+                  present:
+                    - identifier: us.mappings.item.removeFromFavorites
+              - click:
+                 identifier: us.mappings.item.removeFromFavorites
+              - verifyIdentifier:
+                 present:
+                   - identifier: us.mappings.item.addToFavorites
+      - log: Item is removed from favorites              
+
+# Add item to favorites from Item details page
+  - name : unified.us.functions.item.addToFavorites
+    flow:
+      - if: 
+          condition: ${platform} == 'ios'
+          then:    
+              - verifyIdentifier:
+                  label:
+                    - identifier: us.mappings.item.heartIcon
+                      contains: Add to favorites
+              - click:
+                 identifier: us.mappings.item.heartIcon
+              - verifyIdentifier:
+                 label:
+                   - identifier: us.mappings.item.heartIcon
+                     contains: Remove from favorites
+              - log: Item is added to favorites
+      - if: 
+          condition: ${platform} == 'Android'
+          then:    
+              - verifyIdentifier:
+                  present:
+                    - identifier: us.mappings.item.addToFavorites
+              - click:
+                 identifier: us.mappings.item.addToFavorites
+              - verifyIdentifier:
+                 present:
+                   - identifier: us.mappings.item.removeFromFavorites
+              - log: Item is added to favorites          
+
+  # In Item page Scroll to Similar items carousel and add to favorites
+  - name: unified.us.functions.item.addItemsToFavoritesFromSimilarItemsCarousel
+    flow:
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.itemPage.wplus.shopSimilarCarouselHeader
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.similarItemsCarousel.firstItemHeartIcon
+      - click:
+          identifier: us.mappings.item.similarItemsCarousel.firstItemHeartIcon
+      - log: Added first item from similar items carousel to favorite items list    
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.similarItemsCarousel.secondItemHeartIcon
+      - click:
+          identifier: us.mappings.item.similarItemsCarousel.secondItemHeartIcon          
+      - log: Added second item from similar items carousel to favorite items list
+
+  - name: unified.us.functions.unifiedDelivery.itemPage.verifyBadges
+    flow:
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.itempage.unifiedDelivery.zone1.Delivery
+          position: center
+          scrollLimit: 10
+      - click: 
+          identifier: us.mappings.itempage.unifiedDelivery.zone1.Delivery
+
+      - if:
+          condition: ${item} == 'sharedItem'
+          then:
+              - if:
+                  condition: ${Account} == 'W+'
+                  then:
+                    - verifyIdentifier:
+                          present:
+                            - identifier: us.mappings.itemPage.w+.deliveryBadgeSLA
+
+              - if:
+                  condition: ${Account} == 'NonW+'
+                  then:
+                    - verifyIdentifier:
+                          present:
+                            - identifier: us.mappings.itemPage.nonW+.deliveryBadgeSLA
+
+      - if:
+          condition: ${Account} == 'DeliveryOnlyItem'
+          then:
+             - verifyIdentifier:
+                  present:
+                    - identifier: us.mappings.itemPage.deliveryOnlyItemBadgeSLA
+
+  - name : unified.us.functions.item.tappingPickupDeliverShippingFullfilmentInItempage
+    flow:
+      - fetchPageSource: false
+      - if:
+          condition: ${fulfillmentText} == 'Pickup'
+          then:
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.switching.fulfillment.pickupText
+                  - name: direction
+                    string: down
+                  - name: scrollPosition
+                    string: center  
+            - click:    
+                identifier: us.mappings.item.switching.fulfillment.pickupText
+            - sleep:
+               duration: 2000                
+          else:
+            - if:
+                condition: ${fulfillmentText} == 'Delivery'
+                then:
+                  - executeFunction:
+                        name: unified.us.functions.utils.scrollIfNotVisible
+                        params:
+                          - name: identifier
+                            string: us.mappings.item.switching.fulfillment.deliverystoreText
+                          - name: direction
+                            string: up
+                          - name: scrollPosition
+                            string: center
+                          - name: limit
+                            string: 1
+                  - click:    
+                      identifier: us.mappings.item.switching.fulfillment.deliverystoreText
+                  - sleep:
+                     duration: 2000
+                else:
+                  - if:
+                      condition: ${fulfillmentText} == 'Shipping'
+                      then:
+                        - executeFunction:
+                              name: unified.us.functions.utils.scrollIfNotVisible
+                              params:
+                                - name: identifier
+                                  string: us.mappings.item.switching.fulfillment.shippingText
+                                - name: direction
+                                  string: up
+                                - name: scrollPosition
+                                  string: center
+                                - name: limit
+                                  string: 1
+                        - click:    
+                            identifier: us.mappings.item.switching.fulfillment.shippingText 
+                        - sleep:
+                           duration: 2000
+      - fetchPageSource: true
+
+  - name: unified.us.functions.item.autoShip.itemSubscription.ATC
+    flow:
+      - if:
+          identifier:
+            notPresent:
+              - identifier: us.mappings.item.petrx.autoship.subscription.howItWorks.link
+          then:
+            - log: "The item subscription overlay is not Visible, Scrolling Down!!!"
+            - scroll:
+                direction: down
+                untilIdentifier: us.mappings.item.petrx.autoship.subscription.howItWorks.link
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.petrx.autoship.subscriptionRadioButton
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.petrx.autoship.subscriptionRadioButton
+            - identifier: us.mappings.item.petrx.autoship.subscriptionInfoText
+            - identifier: us.mappings.item.petrx.autoship.subscription.howItWorks.link
+      - click:
+          identifier: us.mappings.item.petrx.autoship.subscription.howItWorks.link
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.petrx.autoship.howItWorks.title
+            - identifier: us.mappings.item.petrx.autoship.subscription.howItWorks.itemTitle1
+            - identifier: us.mappings.item.petrx.autoship.subscription.howItWorks.itemTitle2
+            - identifier: us.mappings.item.petrx.autoship.subscription.howItWorks.itemTitle3
+            - identifier: us.mappings.item.petrx.autoship.subscription.howItWorks.termsLink
+      - click:
+          identifier: us.mappings.search.pdp.close
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.petrx.autoship.subscriptionRadioButton
+      - click:
+          identifier: us.mappings.item.petrx.autoship.subscriptionRadioButton
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.subscribe.subscribeButton
+      - click:
+          identifier: us.mappings.subscribe.subscribeButton
+      - sleep:
+          duration: 5000
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.petrx.autoship.setupSubscriptionTitle
+            - identifier: us.mappings.item.petrx.autoship.subscription.itemName
+            - identifier: us.mappings.item.petrx.autoship.subscription.count
+            - identifier: us.mappings.item.petrx.autoship.subscription.freqIcon
+            - identifier: us.mappings.item.petrx.autoship.subscription.freqHeader
+            - identifier: us.mappings.item.petrx.autoship.subscription.freqSubHeader
+            - identifier: us.mappings.item.petrx.autoship.subscription.itemImage
+            - identifier: us.mappings.search.SBA.setup.subscription.DecrementStepper
+            - identifier: us.mappings.search.SBA.setup.subscription.IncrementStepper  
+      - click:
+          identifier: us.mappings.item.addSubscriptionToCart
+      - sleep:
+          duration: 2000
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.petrx.autoship.subscriptionRadioButton
+            - identifier: us.mappings.search.SBA.DecrementStepper
+            - identifier: us.mappings.search.SBA.IncrementStepper
+      - sleep:
+          duration: 2000
+      - if:
+          identifier:
+            present:
+              - identifier: us.mappings.search.pdp.close
+          then:
+            - log: "The PDP close button exists and clicking on it !!!"
+            - click:
+                identifier: us.mappings.search.pdp.close
+          else:
+            - log: "The PDP close button does not exists !!!"
+
+# Verify the EDC New Delivery Icon
+  - name: unified.us.functions.item.verifyNewDeliveryIcon
+    flow:     
+      - executeFunction:
+          name: unified.us.functions.utils.scrollIfNotVisible
+          params:
+            - name: identifier
+              string: us.mappings.item.newEDCDeliveryIcon
+            - name: direction
+              string: down
+            - name: scrollPosition
+              string: center
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.newEDCDeliveryIcon
+
+  - name: unified.us.functions.item.verifyReward.mustBuy
+    flow:
+        - if: 
+            identifier:
+              present: 
+                - identifier: us.mappings.search.rewardsAddedItem.mustBuy
+            then:  
+              - if:
+                  condition: ${platform} == 'ios'
+                  then:
+                    - getString:
+                        identifier: us.mappings.search.rewardsAddedItem.mustBuy
+                        extractNumbers: true
+                        attribute: value
+                        storeIn: MustBuyQuantity
+              - if:
+                  condition: ${platform} == 'Android'
+                  then:
+                    - getString:
+                        identifier: us.mappings.search.rewardsAddedItem.mustBuy
+                        extractNumbers: true
+                        attribute: text
+                        storeIn: MustBuyQuantity
+              - log: Must buy quantity is ${MustBuyQuantity}
+              - arithmetic:
+                  expression: ${MustBuyQuantity} - 1
+                  storeIn: maxQuantity
+              - log: ${maxQuantity} to be incremented
+
+  - name: unified.us.functions.searchpage.verifyBadgeSLA
+    flow:
+      - if:
+          condition: ${Account} == 'W+'
+          then:
+            - scroll:
+                direction: down
+                untilIdentifier: us.mappings.searchpage.deliveryBadgeSLA.W+
+                position: center
+                scrollLimit: 5
+            - verifyIdentifier:
+                present:
+                # Expected text: Free delivery as soon as
+                  - identifier: us.mappings.searchpage.deliveryBadgeSLA.W+
+
+      - if:
+          condition: ${Account} == 'NonW+'
+          then:
+            - scroll:
+                direction: down
+                untilIdentifier: us.mappings.searchpage.deliveryBadgeSLA.nonW+
+                position: center
+                scrollLimit: 5
+            - verifyIdentifier:
+                present:
+                # Expected text: Delivery Or get it faster
+                  - identifier: us.mappings.searchpage.deliveryBadgeSLA.nonW+
+
+      - if:
+          condition: ${Account} == 'deliveryOnly'
+          then:
+            - scroll:
+                direction: down
+                untilIdentifier: us.mappings.searchpage.deliveryBadgeSLA.deliveryOnly
+                position: center
+                scrollLimit: 5
+            - verifyIdentifier:
+                present:
+                # Expected text: Delivery today
+                  - identifier: us.mappings.searchpage.deliveryBadgeSLA.deliveryOnly           
+
+
+# select Virtual Pack
+  - name: unified.us.functions.item.selectVirtualPack
+    flow:
+      - if:
+          condition: ${vpItemType} == 'single'
+          then:
+            - scroll:
+                direction: down
+                scrollLimit: 1
+            - sleep:
+                duration: 3000
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.singleVirtualPack
+            - log: 'Button present'
+            - click:
+                identifier: us.mappings.item.singleVirtualPack
+          else:
+            - log: 'Single Pack Button not present'
+      - if:
+          condition: ${vpItemType} == 'double'
+          then:
+            - scroll:
+                direction: down
+                scrollLimit: 1
+            - sleep:
+                duration: 3000
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.twoVirtualPack
+            - log: 'Button present'
+            - click:
+                identifier: us.mappings.item.twoVirtualPack
+          else:
+            - log: 'Double Pack Button not present'  
+      - if:
+          condition: ${vpItemType} == 'multi'
+          then:
+            - scroll:
+                direction: down
+                scrollLimit: 1
+            - executeFunction:
+                name: unified.us.functions.utils.scrollIfNotVisible
+                params:
+                  - name: identifier
+                    string: us.mappings.item.threeVirtualPack
+                  - name: direction
+                    string: down
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.threeVirtualPack
+            - log: 'Button present'
+            - click:
+                    identifier: us.mappings.item.threeVirtualPack
+            - sleep:
+                duration: 8000
+          else:
+            - log: 'Multi Pack Button not present'
+
+# Verify Drone Landing Page and add items
+  - name: unified.us.functions.item.droneLandingPage.addDroneReadyItems
+    flow:
+      - if:
+          identifier:
+            timeout: 9000
+            present:
+              - identifier: us.mappings.item.droneLandingPage.addressBottomSheet
+          then:
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.droneLanding.addressBottomSheet.droneImage
+                  - identifier: us.mappings.item.droneLanding.addressBottomSheet.droneTitle
+                  - identifier: us.mappings.item.droneLanding.addressBottomSheet.eligibleAddress
+                  - identifier: us.mappings.item.droneLanding.addressBottomSheet.startShopping
+            - click:
+                identifier: us.mappings.item.droneLanding.addressBottomSheet.startShopping
+      - if:
+          identifier:
+            timeout: 9000
+            present:
+              - identifier: us.mappings.item.droneLandingPage.banner
+          then:
+            - verifyIdentifier:
+                present:
+                  - identifier: us.mappings.item.droneLandingPage.header 
+                  - identifier: us.mappings.item.droneLandingPage.description
+                  - identifier: us.mappings.item.droneLandingPage.resultsHeader
+                  - identifier: us.mappings.item.droneLandingPage.resultsPriceDisclaimer
+                  - identifier: us.mappings.item.droneLandingPage.disclaimerIcon
+            - log:
+                message: Drone Landing Page loaded successfully!
+                color: BLUE_BOLD
+            - try:
+                flow:
+                  - verifyIdentifier:
+                      timeout: 5000
+                      present:
+                        - identifier: us.mappings.item.droneLandingPage.addItemButton
+                  - click:
+                      identifier: us.mappings.item.droneLandingPage.addItemButton
+                  - verifyIdentifier:
+                      timeout: 5000
+                      present:
+                        - identifier: us.mappings.item.droneLandingPage.itemQuantityStepper.present
+                  - log:
+                      message: Added first drone item to the cart successfully!
+                      color: BLUE_BOLD
+                  - if:
+                      identifier:
+                        timeout: 9000
+                        present:
+                          - identifier: us.mappings.item.dronesNotAvailableBanner
+                      then:
+                          - click:
+                              identifier: us.mappings.cart.droneCapacity.textBody.gotIt.cta
+                catch:
+                  flow:
+                    - failTest:
+                        message: "Add Drone item button is not clickable."    
+          else:
+            - log:
+                message: Drone Landing Page failed to load.
+                color: RED                  
+
+# Function to validate DSSnapBadge on item detail page
+  - name: unified.us.functions.item.validateDSSnapBadgeOnItemPage
+    flow:
+      - sleep:
+          duration: 5000
+      - scroll:
+          direction: down
+          untilIdentifier: us.mappings.item.snapEligibleLabel
+          position: center
+      - verifyIdentifier:
+          present:
+            - identifier: us.mappings.item.snapEligibleLabel
+      - log:
+          message: unified.us.functions.item.validateDSSnapBadgeOnItemPage
+          color: PURPLE
